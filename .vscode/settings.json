@@ -1,15 +1,9 @@
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
-<<<<<<< HEAD
     "java.project.referencedLibraries": {
         "include": [
             "lib/**/*.jar"
         ]
     }
-=======
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-    ]
->>>>>>> d35cd2efb869596e274b77d70f85bd23e279fea1
 }
