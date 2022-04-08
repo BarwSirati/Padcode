@@ -5,14 +5,14 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Padcode.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/Padcode.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Padcode");
-        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("./asset/PadcodeIcon.png")));
+        primaryStage.getIcons().add(new Image(App.class.getResourceAsStream("/asset/img/icon.png")));
         primaryStage.show();
     }
 
