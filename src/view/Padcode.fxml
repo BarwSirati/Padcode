@@ -12,12 +12,11 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUIController.Controller">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -60,8 +59,8 @@
     </MenuBar>
     <SplitPane dividerPositions="0.25" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-            <TreeView editable="true" prefHeight="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
-            <TabPane tabClosingPolicy="ALL_TABS">
+            <TreeView fx:id="explorerView" editable="true" prefHeight="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
+            <TabPane fx:id="tabPane" onMouseClicked="#createNewTab" tabClosingPolicy="ALL_TABS">
                <tabs>
                   <Tab text="Uncoded">
                      <content>
@@ -78,16 +77,14 @@
     </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
       <children>
-        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
+        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Status" HBox.hgrow="ALWAYS">
           <font>
-            <Font size="11.0" fx:id="x3" />
+            <Font size="11.0" />
           </font>
           <textFill>
-            <Color red="0.625" green="0.625" blue="0.625" fx:id="x4" />
+            <Color red="0.625" green="0.625" blue="0.625" />
           </textFill>
         </Label>
-        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-        <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
       </children>
       <padding>
         <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
