@@ -4,14 +4,6 @@
     "java.project.referencedLibraries": {
         "include": [
             "lib/**/*.jar"
-        ],
-        "exclude": [
-            "c:\\Program Files\\Java\\javafx-sdk-17.0.1\\lib\\javafx-swt.jar",
-            "c:\\Program Files\\Java\\javafx-sdk-17.0.1\\lib\\javafx.base.jar",
-            "c:\\Program Files\\Java\\javafx-sdk-17.0.1\\lib\\javafx.controls.jar",
-            "c:\\Program Files\\Java\\javafx-sdk-17.0.1\\lib\\javafx.fxml.jar",
-            "c:\\Program Files\\Java\\javafx-sdk-17.0.1\\lib\\javafx.graphics.jar",
-            "c:\\Program Files\\Java\\javafx-sdk-17.0.1\\lib\\javafx.swing.jar"
         ]
     }
 }
