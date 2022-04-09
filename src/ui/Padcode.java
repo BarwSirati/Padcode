@@ -12,6 +12,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.HBox;
@@ -33,25 +34,39 @@ public class Padcode {
 
         Menu fileMenu = new Menu("File");
         MenuItem newFile = new MenuItem("New");
+        newFile.setOnAction(e -> {
+            var t = Controller.getNewTab("Uncoded");
+            tabPane.getTabs().add(t);
+            tabPane.getSelectionModel().select(t);
+        });
         MenuItem openFile = new MenuItem("Open File...");
+        openFile.setOnAction(controller::menuOpenFile);
         MenuItem openFolder = new MenuItem("Open Folder...");
+        openFolder.setOnAction(controller::menuOpenFolder);
         SeparatorMenuItem sep1 = new SeparatorMenuItem();
         MenuItem saveFile = new MenuItem("Save");
+
         MenuItem saveAsFile = new MenuItem("Save As...");
+        
         SeparatorMenuItem sep2 = new SeparatorMenuItem();
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> Platform.exit());
 
         Menu editMenu = new Menu("Edit");
         MenuItem undo = new MenuItem("Undo");
+        undo.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).undo());
         MenuItem redo = new MenuItem("Redo");
+        redo.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).redo());
         SeparatorMenuItem sep3 = new SeparatorMenuItem();
         MenuItem cut = new MenuItem("Cut");
+        cut.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).cut());
         MenuItem copy = new MenuItem("Copy");
+        copy.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).copy());
         MenuItem paste = new MenuItem("Paste");
+        paste.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).paste());
 
         Menu helpMenu = new Menu("Help");
-        MenuItem about = new MenuItem("About");
+        MenuItem about = new MenuItem("No");
 
         VBox.setVgrow(menuBar, Priority.NEVER);
         menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);

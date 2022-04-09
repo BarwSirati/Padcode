@@ -1,5 +1,6 @@
 package GUIController;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -60,12 +61,12 @@ public class Controller {
         }
     }
 
-    public TreeView<?> getExplorerView() {
-        return explorerView;
+    public void menuOpenFile(ActionEvent e) {
+
     }
 
-    public TabPane getTabPane() {
-        return tabPane;
+    public void menuOpenFolder(ActionEvent e) {
+
     }
 
     public void setExplorerView(TreeView<?> explorerView) {
