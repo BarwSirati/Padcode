@@ -28,7 +28,7 @@ public class Controller {
     }
 
     // For TextArea, change '\t' to 4 spaces
-    static private TextFormatter<?> getTabFormat() {
+    static public TextFormatter<?> getTabFormat() {
         return new TextFormatter<>(change -> {
             if (change.getText().contains("\t")) {
                 change.setText(change.getText().replace("\t", "    "));
@@ -41,7 +41,7 @@ public class Controller {
     }
 
     // Create new tab object
-    static private Tab getNewTab(String name) {
+    static public Tab getNewTab(String name) {
         TextArea textArea = new TextArea();
         Tab txtTab = new Tab(name, textArea);
         textArea.setTextFormatter(getTabFormat());
@@ -50,7 +50,7 @@ public class Controller {
     }
 
     @FXML // Double click on tabpane to create new tab
-    void createNewTab(MouseEvent event) {
+    public void createNewTab(MouseEvent event) {
         if(event.getButton().equals(MouseButton.PRIMARY)){
             if(event.getClickCount() == 2){
                 Tab t = getNewTab("Uncoded");
@@ -58,5 +58,21 @@ public class Controller {
                 tabPane.getSelectionModel().select(t);
             }
         }
+    }
+
+    public TreeView<?> getExplorerView() {
+        return explorerView;
+    }
+
+    public TabPane getTabPane() {
+        return tabPane;
+    }
+
+    public void setExplorerView(TreeView<?> explorerView) {
+        this.explorerView = explorerView;
+    }
+
+    public void setTabPane(TabPane tabPane) {
+        this.tabPane = tabPane;
     }
 }
