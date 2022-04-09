@@ -1,6 +1,7 @@
 package ui;
 
 import GUIController.Controller;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -39,6 +40,7 @@ public class Padcode {
         MenuItem saveAsFile = new MenuItem("Save As...");
         SeparatorMenuItem sep2 = new SeparatorMenuItem();
         MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(e -> Platform.exit());
 
         Menu editMenu = new Menu("Edit");
         MenuItem undo = new MenuItem("Undo");
