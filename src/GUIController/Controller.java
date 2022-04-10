@@ -1,5 +1,8 @@
 package GUIController;
 
+import java.io.File;
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -33,8 +36,8 @@ public class Controller {
 
     @FXML // Double click on tabpane to create new tab
     public void createNewTab(MouseEvent event) {
-        if(event.getButton().equals(MouseButton.PRIMARY)){
-            if(event.getClickCount() == 2){
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (event.getClickCount() == 2) {
                 Tab t = new NoteTab();
                 tabPane.getTabs().add(t);
                 tabPane.getSelectionModel().select(t);
@@ -43,12 +46,20 @@ public class Controller {
     }
 
     public void menuOpenFile(ActionEvent e) {
-
+        FileChooser fileChooser = new FileChooser();
+        List<File> list = fileChooser.showOpenMultipleDialog(null);
+        if (list != null) {
+            for (File file : list) {
+                System.out.println(file);
+            }
+        }
     }
 
     public void menuOpenFolder(ActionEvent e) {
-
-    }
+        final DirectoryChooser directoryChooser = new DirectoryChooser();
+        File file = directoryChooser.showDialog(null);
+        System.out.print(file);
+    }   
 
     public void menuSave(ActionEvent e) {
 
