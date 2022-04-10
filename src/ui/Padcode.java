@@ -35,7 +35,7 @@ public class Padcode {
         Menu fileMenu = new Menu("File");
         MenuItem newFile = new MenuItem("New");
         newFile.setOnAction(e -> {
-            var t = Controller.getNewTab("Uncoded");
+            var t = new NoteTab();
             tabPane.getTabs().add(t);
             tabPane.getSelectionModel().select(t);
         });
@@ -45,9 +45,9 @@ public class Padcode {
         openFolder.setOnAction(controller::menuOpenFolder);
         SeparatorMenuItem sep1 = new SeparatorMenuItem();
         MenuItem saveFile = new MenuItem("Save");
-
+        saveFile.setOnAction(controller::menuSave);
         MenuItem saveAsFile = new MenuItem("Save As...");
-        
+        saveAsFile.setOnAction(controller::menuSaveAs);
         SeparatorMenuItem sep2 = new SeparatorMenuItem();
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> Platform.exit());
@@ -78,7 +78,7 @@ public class Padcode {
         // #region Mid
         explorerView = new TreeView<>();
         SplitPane.setResizableWithParent(explorerView, false);
-        tabPane = new TabPane(Controller.getNewTab("Uncoded"));
+        tabPane = new TabPane(new NoteTab());
         tabPane.setOnMouseClicked(controller::createNewTab);
         tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
         SplitPane splitPane = new SplitPane(explorerView, tabPane);
