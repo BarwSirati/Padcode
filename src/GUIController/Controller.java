@@ -46,7 +46,7 @@ public class Controller {
     }
 
     public void menuOpenFile(ActionEvent e) {
-        FileChooser fileChooser = new FileChooser();
+        fileChooser = new FileChooser();
         List<File> list = fileChooser.showOpenMultipleDialog(null);
         if (list != null) {
             for (File file : list) {
@@ -56,10 +56,10 @@ public class Controller {
     }
 
     public void menuOpenFolder(ActionEvent e) {
-        final DirectoryChooser directoryChooser = new DirectoryChooser();
-        File file = directoryChooser.showDialog(null);
+        dirChooser = new DirectoryChooser();
+        File file = dirChooser.showDialog(null);
         System.out.print(file);
-    }   
+    }
 
     public void menuSave(ActionEvent e) {
 
