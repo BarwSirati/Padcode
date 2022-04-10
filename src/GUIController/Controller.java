@@ -18,7 +18,7 @@ import ui.NoteTab;
 public class Controller {
 
     @FXML
-    private TreeView<?> explorerView;
+    private TreeView<File> explorerView;
 
     @FXML
     private TabPane tabPane;
@@ -69,7 +69,7 @@ public class Controller {
 
     }
 
-    public void setExplorerView(TreeView<?> explorerView) {
+    public void setExplorerView(TreeView<File> explorerView) {
         this.explorerView = explorerView;
     }
 

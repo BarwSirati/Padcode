@@ -1,5 +1,7 @@
 package ui;
 
+import java.io.File;
+
 import GUIController.Controller;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -22,7 +24,7 @@ import javafx.scene.layout.VBox;
 public class Padcode {
     private Scene scene;
     private VBox outerBox;
-    private TreeView<?> explorerView;
+    private TreeView<File> explorerView;
     private TabPane tabPane;
     private HBox bottomBox;
     private Controller controller = new Controller();
