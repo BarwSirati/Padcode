@@ -54,6 +54,10 @@ public class NoteTab extends Tab {
         super.setText(file.getName());
     }
 
+    public void setFileWithoutCheck(File file) {
+        this.file = file;
+    }
+
     private boolean isTextFile(File file) {
         try {
             String type = Files.probeContentType(file.toPath());
@@ -88,5 +92,9 @@ public class NoteTab extends Tab {
 
     public TextArea getNote() {
         return note;
+    }
+
+    public File getFile() {
+        return file;
     }
 }

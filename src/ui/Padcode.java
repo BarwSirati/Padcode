@@ -94,8 +94,6 @@ public class Padcode {
         outerBox = new VBox(menuBar, splitPane, bottomBox);
         outerBox.setPrefSize(900, 600); // w h
 
-        controller.initialize();
-
         scene = new Scene(outerBox);
     }
 

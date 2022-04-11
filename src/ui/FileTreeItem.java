@@ -83,8 +83,7 @@ public class FileTreeItem extends TreeItem<NameFile> {
 		if (f != null && f.isDirectory()) {
 			NameFile[] files = f.listFiles();
 			if (files != null) {
-				ObservableList<TreeItem<NameFile>> children = FXCollections
-						.observableArrayList();
+				ObservableList<TreeItem<NameFile>> children = FXCollections.observableArrayList();
 
 				for (NameFile childFile : files) {
 					children.add(new FileTreeItem(childFile));
