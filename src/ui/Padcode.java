@@ -1,6 +1,5 @@
 package ui;
 
-import java.io.File;
 
 import GUIController.Controller;
 import javafx.application.Platform;
@@ -17,7 +16,7 @@ import javafx.scene.layout.VBox;
 public class Padcode {
     private Scene scene;
     private VBox outerBox;
-    private TreeView<File> explorerView;
+    private TreeView<NameFile> explorerView;
     private TabPane tabPane;
     private HBox bottomBox;
     private Controller controller = new Controller();
@@ -72,6 +71,7 @@ public class Padcode {
 
         // #region Mid
         explorerView = new TreeView<>();
+        explorerView.setOnMouseClicked(controller::selectItem);
         SplitPane.setResizableWithParent(explorerView, false);
         tabPane = new TabPane(new NoteTab());
         tabPane.setOnMouseClicked(controller::createNewTab);

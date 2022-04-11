@@ -56,7 +56,11 @@ public class NoteTab extends Tab {
 
     private boolean isTextFile(File file) {
         try {
-            return Files.probeContentType(file.toPath()).startsWith("text");
+            String type = Files.probeContentType(file.toPath());
+            if (type == null) {
+                return false;
+            }
+            return type.startsWith("text");
         } catch (IOException e) {
             return false;
         }
