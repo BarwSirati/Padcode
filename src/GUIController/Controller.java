@@ -45,15 +45,7 @@ public class Controller {
         List<File> list = fileChooser.showOpenMultipleDialog(null);
         if (list != null) {
             for (File file : list) {
-                NoteTab tab;
-                try {
-                    tab = new NoteTab(file);
-                } catch (FileIsDirectoryException | FileIsNotTextException e1) {
-                    tab = new NoteTab(file.getName());
-                    tab.getNote().setText("This file is binary and cannot be displayed.");
-                    tab.getNote().setEditable(false);
-                }
-                tabPane.getTabs().add(tab);
+                newTabInTabPane(file);
             }
         }
     }
@@ -86,6 +78,10 @@ public class Controller {
             return;
         }
         File file = item.getValue();
+        newTabInTabPane(file);
+    }
+
+    private void newTabInTabPane(File file) {
         NoteTab tab;
         try {
             tab = new NoteTab(file);
