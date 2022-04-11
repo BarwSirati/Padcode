@@ -12,7 +12,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import ui.MyException.FileIsDirectoryException;
-import ui.MyException.FileIsNotTxtException;
+import ui.MyException.FileIsNotTextException;
 
 public class NoteTab extends Tab {
     private static int spaces = 4;
@@ -29,19 +29,19 @@ public class NoteTab extends Tab {
         setContent(note);
     }
 
-    public NoteTab(File file) throws FileIsDirectoryException, FileIsNotTxtException {
+    public NoteTab(File file) throws FileIsDirectoryException, FileIsNotTextException {
         super(file.getName());
         setContent(note);
         setFile(file);
     }
 
-    public void setFile(File file) throws FileIsDirectoryException, FileIsNotTxtException {
+    public void setFile(File file) throws FileIsDirectoryException, FileIsNotTextException {
         this.file = file;
         if (file.isDirectory()) {
             throw new FileIsDirectoryException();
         }
-        if (!getFileExtension(file).equals(".txt")) {
-            throw new FileIsNotTxtException();
+        if (!isTextFile(file)) {
+            throw new FileIsNotTextException();
         }
         String text;
         try {
@@ -51,16 +51,15 @@ public class NoteTab extends Tab {
             text = e.toString();
         }
         note.setText(text);
-        super.setText(file.getName().replaceFirst("[.][^.]+$", "")); // get name without extention
+        super.setText(file.getName());
     }
 
-    private String getFileExtension(File file) {
-        String name = file.getName();
-        int lastIndexOf = name.lastIndexOf(".");
-        if (lastIndexOf == -1) {
-            return ""; // empty extension
+    private boolean isTextFile(File file) {
+        try {
+            return Files.probeContentType(file.toPath()).startsWith("text");
+        } catch (IOException e) {
+            return false;
         }
-        return name.substring(lastIndexOf);
     }
 
     // For TextArea, change '\t' to 4 spaces
@@ -81,5 +80,9 @@ public class NoteTab extends Tab {
         temp.setTextFormatter(getTabFormat());
         temp.setFont(Font.font("Consolas", FontWeight.NORMAL, 16));
         return temp;
+    }
+
+    public TextArea getNote() {
+        return note;
     }
 }
