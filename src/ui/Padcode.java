@@ -1,6 +1,5 @@
 package ui;
 
-
 import GUIController.Controller;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -8,6 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -28,35 +30,53 @@ public class Padcode {
 
         Menu fileMenu = new Menu("File");
         MenuItem newFile = new MenuItem("New");
+        newFile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         newFile.setOnAction(e -> {
             var t = new NoteTab();
             tabPane.getTabs().add(t);
             tabPane.getSelectionModel().select(t);
         });
         MenuItem openFile = new MenuItem("Open File...");
+        openFile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
         openFile.setOnAction(controller::menuOpenFile);
         MenuItem openFolder = new MenuItem("Open Folder...");
+        openFolder.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         openFolder.setOnAction(controller::menuOpenFolder);
         SeparatorMenuItem sep1 = new SeparatorMenuItem();
         MenuItem saveFile = new MenuItem("Save");
+        saveFile.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
         saveFile.setOnAction(controller::menuSave);
         MenuItem saveAsFile = new MenuItem("Save As...");
+        saveAsFile.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         saveAsFile.setOnAction(controller::menuSaveAs);
         SeparatorMenuItem sep2 = new SeparatorMenuItem();
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> Platform.exit());
-
+        
         Menu editMenu = new Menu("Edit");
         MenuItem undo = new MenuItem("Undo");
-        undo.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).undo());
+        undo.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN));
+        undo.setOnAction(e -> {
+            Tab t = tabPane.getSelectionModel().getSelectedItem();
+            if (t != null)
+                ((TextArea)t.getContent()).undo();
+        });
         MenuItem redo = new MenuItem("Redo");
+        redo.setAccelerator(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
         redo.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).redo());
+        // Need Fix
         SeparatorMenuItem sep3 = new SeparatorMenuItem();
         MenuItem cut = new MenuItem("Cut");
+        cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN));
+        // Need Fix
         cut.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).cut());
         MenuItem copy = new MenuItem("Copy");
+        copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
+        // Need Fix
         copy.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).copy());
         MenuItem paste = new MenuItem("Paste");
+        // Need Fix
+        paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
         paste.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).paste());
 
         Menu helpMenu = new Menu("Help");
