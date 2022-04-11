@@ -98,26 +98,37 @@ public class Controller {
 
     public void menuSave(ActionEvent e) {
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
-        if(tab.getFile().canWrite()){
-            if (tab.getFile() == null) {
-                menuSaveAs(e);
-            } else {
-                saveTextToFile(tab.getFile(), tab.getNote());
-            }
-        }else{
+        if (tab.getFile() == null) {
+            menuSaveAs(e);
+            return;
+        }
+        if (tab.getFile().canWrite()) {
+            saveTextToFile(tab.getFile(), tab.getNote());
+        } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setHeaderText("This File Is Read-Only");
             alert.setContentText("A read-only file is any file with the read-only.");
             alert.show();
         }
     }
+
     public void menuSaveAs(ActionEvent e) {
         saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        if (tab.getFile() != null)
+        {
+            saveChooser.setInitialDirectory(tab.getFile().getParentFile());
+            saveChooser.setInitialFileName(tab.getFile().getName());
+        }
+        else {
+            saveChooser.setInitialFileName(tab.getText() + ".txt");
+        }
         File file = saveChooser.showSaveDialog(null);
-        saveTextToFile(file, tab.getNote());
-        tab.setText(file.getName());
-        tab.setFileWithoutCheck(file);
+        if (file != null) {
+            saveTextToFile(file, tab.getNote());
+            tab.setText(file.getName());
+            tab.setFileWithoutCheck(file);
+        }
     }
 
     public void setExplorerView(TreeView<NameFile> explorerView) {
