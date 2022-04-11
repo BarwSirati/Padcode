@@ -1,19 +1,27 @@
 package GUIController;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import ui.FileTreeItem;
 import ui.NameFile;
 import ui.NoteTab;
@@ -31,6 +39,7 @@ public class Controller {
 
     FileChooser fileChooser = new FileChooser();
     DirectoryChooser dirChooser = new DirectoryChooser();
+    FileChooser saveChooser = new FileChooser();
     NameFile initialDir;
 
     @FXML // Double click on tabpane to create new tab
@@ -45,9 +54,12 @@ public class Controller {
     }
 
     public void menuOpenFile(ActionEvent e) {
-        File initial = ((NoteTab)tabPane.getSelectionModel().getSelectedItem()).getFile();
-        if (initial != null) {
-            fileChooser.setInitialDirectory(initial.getParentFile());
+        NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        if (tab != null) {
+            File initial = tab.getFile();
+            if (initial != null) {
+                fileChooser.setInitialDirectory(initial.getParentFile());
+            }
         }
         List<File> list = fileChooser.showOpenMultipleDialog(null);
         if (list != null) {
@@ -74,12 +86,39 @@ public class Controller {
         }
     }
 
-    public void menuSave(ActionEvent e) {
+    public void saveTextToFile(File file, TextArea content) {
+        try (FileOutputStream fos = new FileOutputStream(file);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                BufferedWriter writer = new BufferedWriter(osw)) {
+            writer.append(content.getText());
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+    }
 
+    public void menuSave(ActionEvent e) {
+        NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        if(tab.getFile().canWrite()){
+            if (tab.getFile() == null) {
+                menuSaveAs(e);
+            } else {
+                saveTextToFile(tab.getFile(), tab.getNote());
+            }
+        }else{
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setHeaderText("This File Is Read-Only");
+            alert.setContentText("A read-only file is any file with the read-only.");
+            alert.show();
+        }
     }
 
     public void menuSaveAs(ActionEvent e) {
-
+        saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
+        NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        File file = saveChooser.showSaveDialog(null);
+        saveTextToFile(file, tab.getNote());
+        tab.setText(file.getName());
+        tab.setFileWithoutCheck(file);
     }
 
     public void setExplorerView(TreeView<NameFile> explorerView) {

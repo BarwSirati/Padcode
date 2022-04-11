@@ -92,7 +92,6 @@ public class FileTreeItem extends TreeItem<NameFile> {
 			NameFile[] files = f.listFiles();
 			if (files != null) {
 				ObservableList<TreeItem<NameFile>> children = FXCollections.observableArrayList();
-
 				for (NameFile childFile : files) {
 					FileTreeItem item = new FileTreeItem(childFile);
 					Icon icon = FileSystemView.getFileSystemView().getSystemIcon(childFile);
