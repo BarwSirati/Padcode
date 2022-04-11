@@ -29,6 +29,7 @@ public class Controller {
 
     FileChooser fileChooser = new FileChooser();
     DirectoryChooser dirChooser = new DirectoryChooser();
+    NameFile initialDir;
 
     @FXML // Double click on tabpane to create new tab
     public void createNewTab(MouseEvent event) {
@@ -42,6 +43,10 @@ public class Controller {
     }
 
     public void menuOpenFile(ActionEvent e) {
+        File initial = ((NoteTab)tabPane.getSelectionModel().getSelectedItem()).getFile();
+        if (initial != null) {
+            fileChooser.setInitialDirectory(initial.getParentFile());
+        }
         List<File> list = fileChooser.showOpenMultipleDialog(null);
         if (list != null) {
             for (File file : list) {
@@ -51,8 +56,16 @@ public class Controller {
     }
 
     public void menuOpenFolder(ActionEvent e) {
-        NameFile file = new NameFile(dirChooser.showDialog(null));
-        FileTreeItem root = new FileTreeItem(file);
+        if (initialDir != null) {
+            dirChooser.setInitialDirectory(initialDir);
+        }
+        File file = dirChooser.showDialog(null);
+        if (file == null) {
+            return;
+        }
+        initialDir = new NameFile(file);
+        FileTreeItem root = new FileTreeItem(initialDir);
+        root.setExpanded(true);
         explorerView.setRoot(root);
     }
 
