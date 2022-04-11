@@ -46,7 +46,6 @@ public class Controller {
     }
 
     public void menuOpenFile(ActionEvent e) {
-        fileChooser = new FileChooser();
         List<File> list = fileChooser.showOpenMultipleDialog(null);
         if (list != null) {
             for (File file : list) {
@@ -56,7 +55,6 @@ public class Controller {
     }
 
     public void menuOpenFolder(ActionEvent e) {
-        dirChooser = new DirectoryChooser();
         File file = dirChooser.showDialog(null);
         System.out.print(file);
     }
