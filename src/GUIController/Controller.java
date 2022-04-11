@@ -111,7 +111,6 @@ public class Controller {
             alert.show();
         }
     }
-
     public void menuSaveAs(ActionEvent e) {
         saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
