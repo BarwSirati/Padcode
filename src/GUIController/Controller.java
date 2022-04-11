@@ -1,6 +1,11 @@
 package GUIController;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.util.List;
 
 import javafx.event.ActionEvent;
@@ -8,12 +13,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import ui.FileTreeItem;
 import ui.NameFile;
 import ui.NoteTab;
@@ -31,6 +38,7 @@ public class Controller {
 
     FileChooser fileChooser = new FileChooser();
     DirectoryChooser dirChooser = new DirectoryChooser();
+    FileChooser saveChooser = new FileChooser();
     NameFile initialDir;
 
     @FXML // Double click on tabpane to create new tab
@@ -45,9 +53,12 @@ public class Controller {
     }
 
     public void menuOpenFile(ActionEvent e) {
-        File initial = ((NoteTab)tabPane.getSelectionModel().getSelectedItem()).getFile();
-        if (initial != null) {
-            fileChooser.setInitialDirectory(initial.getParentFile());
+        NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        if (tab != null) {
+            File initial = tab.getFile();
+            if (initial != null) {
+                fileChooser.setInitialDirectory(initial.getParentFile());
+            }
         }
         List<File> list = fileChooser.showOpenMultipleDialog(null);
         if (list != null) {
@@ -74,8 +85,24 @@ public class Controller {
         }
     }
 
-    public void menuSave(ActionEvent e) {
+    public void saveTextToFile(File file, TextArea content) {
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(content.getText());
+        } catch (IOException e) {
+            System.out.print(e.getMessage());
+        }
+    }
 
+    public void menuSave(ActionEvent e) {
+        saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
+        NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        if (tab.getFile() == null) {
+            File fileName = saveChooser.showSaveDialog(null);
+            saveTextToFile(fileName, tab.getNote());
+            tab.setText(fileName.getName());
+        } else {
+
+        }
     }
 
     public void menuSaveAs(ActionEvent e) {
