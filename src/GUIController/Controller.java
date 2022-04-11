@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
@@ -30,14 +29,6 @@ public class Controller {
 
     FileChooser fileChooser = new FileChooser();
     DirectoryChooser dirChooser = new DirectoryChooser();
-
-    @FXML
-    public void initialize() {
-        System.out.println("start");
-        for (var tab : tabPane.getTabs()) {
-            ((TextArea) tab.getContent()).setTextFormatter(NoteTab.getTabFormat());
-        }
-    }
 
     @FXML // Double click on tabpane to create new tab
     public void createNewTab(MouseEvent event) {
@@ -100,10 +91,18 @@ public class Controller {
             tab = new NoteTab(file);
         } catch (FileIsNotTextException e1) {
             tab = new NoteTab(file.getName());
+            tab.setFileWithoutCheck(file);
             tab.getNote().setText("This file is binary and cannot be displayed.");
             tab.getNote().setEditable(false);
         } catch (FileIsDirectoryException e2) {
             return;
+        }
+        for (Tab tab2 : tabPane.getTabs()) {
+            NoteTab noteTab = (NoteTab) tab2;
+            if (noteTab.getFile() != null && noteTab.getFile().equals(file)) {
+                tabPane.getSelectionModel().select(tab2);
+                return;
+            }
         }
         tabPane.getTabs().add(tab);
     }
