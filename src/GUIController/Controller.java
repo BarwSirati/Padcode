@@ -1,21 +1,22 @@
 package GUIController;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.FileSystemAlreadyExistsException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
@@ -86,27 +87,38 @@ public class Controller {
     }
 
     public void saveTextToFile(File file, TextArea content) {
-        try (FileWriter fileWriter = new FileWriter(file)) {
-            fileWriter.write(content.getText());
-        } catch (IOException e) {
+        try (FileOutputStream fos = new FileOutputStream(file);
+                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                BufferedWriter writer = new BufferedWriter(osw)) {
+            writer.append(content.getText());
+        } catch (Exception e) {
             System.out.print(e.getMessage());
         }
     }
 
     public void menuSave(ActionEvent e) {
-        saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
-        if (tab.getFile() == null) {
-            File fileName = saveChooser.showSaveDialog(null);
-            saveTextToFile(fileName, tab.getNote());
-            tab.setText(fileName.getName());
-        } else {
-
+        if(tab.getFile().canWrite()){
+            if (tab.getFile() == null) {
+                menuSaveAs(e);
+            } else {
+                saveTextToFile(tab.getFile(), tab.getNote());
+            }
+        }else{
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setHeaderText("This File Is Read-Only");
+            alert.setContentText("A read-only file is any file with the read-only.");
+            alert.show();
         }
     }
 
     public void menuSaveAs(ActionEvent e) {
-
+        saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
+        NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+        File file = saveChooser.showSaveDialog(null);
+        saveTextToFile(file, tab.getNote());
+        tab.setText(file.getName());
+        tab.setFileWithoutCheck(file);
     }
 
     public void setExplorerView(TreeView<NameFile> explorerView) {

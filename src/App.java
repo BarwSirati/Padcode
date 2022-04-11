@@ -11,7 +11,6 @@ public class App extends Application {
         primaryStage.getIcons().add(new Image(App.class.getResourceAsStream("/asset/img/icon.png")));
         primaryStage.show();
     }
-
     public static void main(String[] args) {
         launch(args);
     }
