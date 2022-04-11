@@ -1,8 +1,16 @@
 package ui;
 import java.io.File;
+
+import javax.swing.Icon;
+import javax.swing.filechooser.FileSystemView;
+import java.awt.image.BufferedImage;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * @author Alexander Bolte - Bolte Consulting (2010 - 2014).
@@ -86,7 +94,10 @@ public class FileTreeItem extends TreeItem<NameFile> {
 				ObservableList<TreeItem<NameFile>> children = FXCollections.observableArrayList();
 
 				for (NameFile childFile : files) {
-					children.add(new FileTreeItem(childFile));
+					FileTreeItem item = new FileTreeItem(childFile);
+					Icon icon = FileSystemView.getFileSystemView().getSystemIcon(childFile);
+					item.setGraphic(new ImageView(jswingIconToImage(icon)));
+					children.add(item);
 				}
 
 				return children;
@@ -95,6 +106,13 @@ public class FileTreeItem extends TreeItem<NameFile> {
 
 		return FXCollections.emptyObservableList();
 	}
+
+	private static Image jswingIconToImage(javax.swing.Icon jswingIcon) {
+        BufferedImage bufferedImage = new BufferedImage(jswingIcon.getIconWidth(), jswingIcon.getIconHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        jswingIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+        return SwingFXUtils.toFXImage(bufferedImage, null);
+    }
 
 	private boolean isFirstTimeChildren = true;
 	private boolean isFirstTimeLeaf = true;

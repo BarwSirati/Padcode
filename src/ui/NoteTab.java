@@ -6,9 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import ui.MyException.FileIsDirectoryException;
@@ -40,6 +44,22 @@ public class NoteTab extends Tab {
         if (file.isDirectory()) {
             throw new FileIsDirectoryException();
         }
+        super.setText(file.getName());
+        if (isImageFile(file)) {
+            Image img = new Image(file.getPath());
+            ImageView imgView = new ImageView(img);
+            imgView.setPreserveRatio(true);
+            imgView.setFitHeight(img.getHeight());
+            VBox box = new VBox(imgView);
+            box.setAlignment(Pos.CENTER);
+            setContent(box);
+            imgView.setOnScroll(e -> {
+                if (imgView.getFitHeight() + e.getDeltaY() > 0) {
+                    imgView.setFitHeight(imgView.getFitHeight() + e.getDeltaY());
+                }
+            });
+            return;
+        }
         if (!isTextFile(file)) {
             throw new FileIsNotTextException();
         }
@@ -51,20 +71,31 @@ public class NoteTab extends Tab {
             text = e.toString();
         }
         note.setText(text);
-        super.setText(file.getName());
     }
 
     public void setFileWithoutCheck(File file) {
         this.file = file;
     }
 
-    private boolean isTextFile(File file) {
+    private static boolean isTextFile(File file) {
         try {
             String type = Files.probeContentType(file.toPath());
             if (type == null) {
                 return false;
             }
             return type.startsWith("text");
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static boolean isImageFile(File file) {
+        try {
+            String type = Files.probeContentType(file.toPath());
+            if (type == null) {
+                return false;
+            }
+            return type.startsWith("image");
         } catch (IOException e) {
             return false;
         }

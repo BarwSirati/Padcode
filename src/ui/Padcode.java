@@ -78,10 +78,11 @@ public class Padcode {
         tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
         tabPane.setTabDragPolicy(TabDragPolicy.REORDER);
         SplitPane splitPane = new SplitPane(explorerView, tabPane);
-        splitPane.setDividerPosition(0, 0.25);
+        splitPane.setDividerPosition(0, 0);
         VBox.setVgrow(splitPane, Priority.ALWAYS);
         controller.setExplorerView(explorerView);
         controller.setTabPane(tabPane);
+        controller.setSplitPane(splitPane);
         // #endregion
 
         //#endregion Bottom

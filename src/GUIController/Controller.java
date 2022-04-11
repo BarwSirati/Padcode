@@ -5,6 +5,7 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
@@ -26,6 +27,7 @@ public class Controller {
 
     @FXML
     private TabPane tabPane;
+    private SplitPane splitPane;
 
     FileChooser fileChooser = new FileChooser();
     DirectoryChooser dirChooser = new DirectoryChooser();
@@ -67,6 +69,9 @@ public class Controller {
         FileTreeItem root = new FileTreeItem(initialDir);
         root.setExpanded(true);
         explorerView.setRoot(root);
+        if (splitPane.getDividerPositions()[0] < 0.01) {
+            splitPane.setDividerPosition(0, 0.25);
+        }
     }
 
     public void menuSave(ActionEvent e) {
@@ -83,6 +88,10 @@ public class Controller {
 
     public void setTabPane(TabPane tabPane) {
         this.tabPane = tabPane;
+    }
+
+    public void setSplitPane(SplitPane splitPane) {
+        this.splitPane = splitPane;
     }
 
     public void selectItem(MouseEvent event) {
@@ -114,5 +123,6 @@ public class Controller {
             }
         }
         tabPane.getTabs().add(tab);
+        tabPane.getSelectionModel().select(tab);
     }
 }
