@@ -34,7 +34,7 @@ public class Controller {
 
     @FXML
     private TreeView<NameFile> explorerView;
-
+ 
     @FXML
     private TabPane tabPane;
     private SplitPane splitPane;
@@ -47,11 +47,25 @@ public class Controller {
     @FXML // Double click on tabpane to create new tab
     public void createNewTab(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 2 && event.getTarget().toString().startsWith("TabPaneSkin")) {
                 Tab t = new NoteTab();
                 tabPane.getTabs().add(t);
                 tabPane.getSelectionModel().select(t);
             }
+        }
+    }
+
+    public void menuFont(ActionEvent e) {
+        try {
+            FontSelectorDialog dialog = new FontSelectorDialog(null);
+            dialog.setTitle("Font");
+            dialog.showAndWait();
+            NoteTab.font = dialog.getResult();
+            tabPane.getTabs().forEach(t -> {
+                ((NoteTab) t).getNote().setFont(NoteTab.font);
+            });
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -72,21 +86,7 @@ public class Controller {
             }
         }
     }
-
-    public void menuFont(ActionEvent e) {
-        try {
-            FontSelectorDialog dialog = new FontSelectorDialog(null);
-            dialog.setTitle("Font");
-            dialog.showAndWait();
-            NoteTab.font = dialog.getResult();
-            tabPane.getTabs().forEach(t -> {
-                ((NoteTab) t).getNote().setFont(NoteTab.font);
-            });
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
+    
     public void menuOpenFolder(ActionEvent e) {
         if (initialDir != null) {
             dirChooser.setInitialDirectory(initialDir);
@@ -177,8 +177,9 @@ public class Controller {
         this.splitPane = splitPane;
     }
 
-    public void selectItem(MouseEvent event) { // Bug
-        if (event.getButton().equals(MouseButton.PRIMARY)) {
+    public void selectItem(MouseEvent event) {
+        System.out.println(event.getTarget());
+        if (event.getButton().equals(MouseButton.PRIMARY) && !event.getTarget().toString().startsWith("Group")) {
             TreeItem<NameFile> item = explorerView.getSelectionModel().getSelectedItem();
             if (item == null) {
                 return;
