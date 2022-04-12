@@ -59,6 +59,8 @@ public class Controller {
             File initial = tab.getFile();
             if (initial != null) {
                 fileChooser.setInitialDirectory(initial.getParentFile());
+            } else if (initialDir != null) {
+                fileChooser.setInitialDirectory(initialDir);
             }
         }
         List<File> list = fileChooser.showOpenMultipleDialog(null);
@@ -72,6 +74,11 @@ public class Controller {
     public void menuOpenFolder(ActionEvent e) {
         if (initialDir != null) {
             dirChooser.setInitialDirectory(initialDir);
+        } else {
+            NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
+            if (tab != null && tab.getFile() != null) {
+                fileChooser.setInitialDirectory(tab.getFile().getParentFile());
+            }
         }
         File file = dirChooser.showDialog(null);
         if (file == null) {
@@ -115,12 +122,10 @@ public class Controller {
     public void menuSaveAs(ActionEvent e) {
         saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
-        if (tab.getFile() != null)
-        {
+        if (tab.getFile() != null) {
             saveChooser.setInitialDirectory(tab.getFile().getParentFile());
             saveChooser.setInitialFileName(tab.getFile().getName());
-        }
-        else {
+        } else {
             saveChooser.setInitialFileName(tab.getText() + ".txt");
         }
         File file = saveChooser.showSaveDialog(null);
