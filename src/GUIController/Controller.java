@@ -161,13 +161,15 @@ public class Controller {
         this.splitPane = splitPane;
     }
 
-    public void selectItem(MouseEvent event) {
-        TreeItem<NameFile> item = explorerView.getSelectionModel().getSelectedItem();
-        if (item == null) {
-            return;
+    public void selectItem(MouseEvent event) { // Bug
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            TreeItem<NameFile> item = explorerView.getSelectionModel().getSelectedItem();
+            if (item == null) {
+                return;
+            }
+            File file = item.getValue();
+            newTabInTabPane(file);
         }
-        File file = item.getValue();
-        newTabInTabPane(file);
     }
 
     private void newTabInTabPane(File file) {
