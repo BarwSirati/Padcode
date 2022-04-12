@@ -1,5 +1,6 @@
 package ui;
 import java.io.File;
+import java.io.FileFilter;
 
 import javax.swing.Icon;
 import javax.swing.filechooser.FileSystemView;
@@ -39,7 +40,7 @@ public class FileTreeItem extends TreeItem<NameFile> {
 	public FileTreeItem(NameFile f) {
 		super(f);
 	}
-
+	static int test = 0;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -49,7 +50,6 @@ public class FileTreeItem extends TreeItem<NameFile> {
 	public ObservableList<TreeItem<NameFile>> getChildren() {
 		if (isFirstTimeChildren) {
 			isFirstTimeChildren = false;
-
 			/*
 			 * First getChildren() call, so we actually go off and determine the
 			 * children of the File contained in this TreeItem.
@@ -89,7 +89,7 @@ public class FileTreeItem extends TreeItem<NameFile> {
 	private ObservableList<TreeItem<NameFile>> buildChildren(TreeItem<NameFile> TreeItem) {
 		NameFile f = TreeItem.getValue();
 		if (f != null && f.isDirectory()) {
-			NameFile[] files = f.listFiles();
+			NameFile[] files = f.listFiles((FileFilter)pathname -> !pathname.isHidden());
 			if (files != null) {
 				ObservableList<TreeItem<NameFile>> children = FXCollections.observableArrayList();
 				for (NameFile childFile : files) {

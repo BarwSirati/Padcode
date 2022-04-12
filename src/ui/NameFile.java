@@ -1,6 +1,7 @@
 package ui;
 
 import java.io.File;
+import java.io.FileFilter;
 
 public class NameFile extends File{
 
@@ -31,6 +32,19 @@ public class NameFile extends File{
                nameFiles[i] = new NameFile(files[i]);
           }
           return nameFiles;
+     }
+
+     @Override
+     public NameFile[] listFiles(FileFilter filter) {
+          File[] files = super.listFiles(filter);
+          if (files == null) {
+               return null;
+          }
+          NameFile[] nameFiles = new NameFile[files.length];
+          for (int i = 0; i < nameFiles.length; i++) {
+               nameFiles[i] = new NameFile(files[i]);
+          }
+          return nameFiles;          
      }
 
      @Override

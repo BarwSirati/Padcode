@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -91,6 +92,17 @@ public class Controller {
         if (splitPane.getDividerPositions()[0] < 0.01) {
             splitPane.setDividerPosition(0, 0.25);
         }
+
+        Task<Void> task = new Task<Void>() {
+            protected Void call() throws Exception {
+                TreeItem<NameFile> root = explorerView.getRoot();
+                for (var item : root.getChildren()) {
+                    item.getChildren();
+                }
+                return null;
+            }
+        };
+        new Thread(task).start();
     }
 
     public void saveTextToFile(File file, TextArea content) {
