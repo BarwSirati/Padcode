@@ -77,7 +77,7 @@ public class Controller {
         } else {
             NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
             if (tab != null && tab.getFile() != null) {
-                fileChooser.setInitialDirectory(tab.getFile().getParentFile());
+                dirChooser.setInitialDirectory(tab.getFile().getParentFile());
             }
         }
         File file = dirChooser.showDialog(null);
