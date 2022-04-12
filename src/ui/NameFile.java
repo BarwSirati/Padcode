@@ -23,6 +23,9 @@ public class NameFile extends File{
      @Override
      public NameFile[] listFiles() {
           File[] files = super.listFiles();
+          if (files == null) {
+               return null;
+          }
           NameFile[] nameFiles = new NameFile[files.length];
           for (int i = 0; i < nameFiles.length; i++) {
                nameFiles[i] = new NameFile(files[i]);
