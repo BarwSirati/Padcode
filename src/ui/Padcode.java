@@ -61,23 +61,43 @@ public class Padcode {
             if (t != null)
                 ((TextArea)t.getContent()).undo();
         });
+
         MenuItem redo = new MenuItem("Redo");
         redo.setAccelerator(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
-        redo.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).redo());
-        // Need Fix
+        redo.setOnAction(e -> {
+            Tab t = tabPane.getSelectionModel().getSelectedItem();
+            if (t != null) {
+                ((TextArea)t.getContent()).redo();
+            }
+        });
+
         SeparatorMenuItem sep3 = new SeparatorMenuItem();
         MenuItem cut = new MenuItem("Cut");
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN));
-        // Need Fix
-        cut.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).cut());
+        cut.setOnAction(e -> {
+            Tab t = tabPane.getSelectionModel().getSelectedItem();
+            if (t != null) {
+                ((TextArea)t.getContent()).cut();
+            }
+        });
+
         MenuItem copy = new MenuItem("Copy");
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
-        // Need Fix
-        copy.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).copy());
+        copy.setOnAction(e -> {
+            Tab t = tabPane.getSelectionModel().getSelectedItem();
+            if (t != null) {
+                ((TextArea)t.getContent()).copy();
+            }
+        });
+
         MenuItem paste = new MenuItem("Paste");
-        // Need Fix
         paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
-        paste.setOnAction(e -> ((TextArea)tabPane.getSelectionModel().getSelectedItem().getContent()).paste());
+        paste.setOnAction(e -> {
+            Tab t = tabPane.getSelectionModel().getSelectedItem();
+            if (t != null) {
+                ((TextArea)t.getContent()).paste();
+            }
+        });
 
         Menu helpMenu = new Menu("Help");
         MenuItem about = new MenuItem("No");

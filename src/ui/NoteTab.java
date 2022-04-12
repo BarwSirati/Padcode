@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -66,10 +69,16 @@ public class NoteTab extends Tab {
         String text;
         try {
             text = new String(Files.readAllBytes(Paths.get(file.getPath())), StandardCharsets.UTF_8);
+        } catch (NoSuchFileException e) {
+            text = ""; 
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setHeaderText("File Not Found");
+            alert.setContentText(file.getName() + " cannot be found.");
+            alert.show();
         } catch (IOException e) {
             System.out.println(e);
             text = e.toString();
-        }
+        } 
         note.setText(text);
     }
 

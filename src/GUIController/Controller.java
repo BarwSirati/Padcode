@@ -114,8 +114,9 @@ public class Controller {
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setHeaderText("This File Is Read-Only");
-            alert.setContentText("A read-only file is any file with the read-only.");
-            alert.show();
+            alert.setContentText("Read-only is a file attribute which only allows a user to view a file, restricting any writing to the file.");
+            alert.showAndWait();
+            menuSaveAs(e);
         }
     }
 
