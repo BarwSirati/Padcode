@@ -20,8 +20,6 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -340,5 +338,9 @@ public class FontSelectorDialog extends Dialog<Font> {
         private <T> T listSelection(final ListView<T> listView) {
             return listView.selectionModelProperty().get().getSelectedItem();
         }
+    }
+
+    public Font getDefaultFont() {
+        return defaultFont;
     }
 }
