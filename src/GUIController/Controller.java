@@ -10,6 +10,7 @@ import java.util.List;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -18,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.skin.TabPaneSkin;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
@@ -178,8 +180,7 @@ public class Controller {
     }
 
     public void selectItem(MouseEvent event) {
-        System.out.println(event.getTarget());
-        if (event.getButton().equals(MouseButton.PRIMARY) && !event.getTarget().toString().startsWith("Group")) {
+        if (event.getButton().equals(MouseButton.PRIMARY) && !(event.getTarget() instanceof Group)) {
             TreeItem<NameFile> item = explorerView.getSelectionModel().getSelectedItem();
             if (item == null) {
                 return;
