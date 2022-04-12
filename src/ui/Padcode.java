@@ -98,6 +98,9 @@ public class Padcode {
                 ((TextArea)t.getContent()).paste();
             }
         });
+        SeparatorMenuItem sep4 = new SeparatorMenuItem();
+        MenuItem font = new MenuItem("Font");
+        font.setOnAction(controller::menuFont);
 
         Menu helpMenu = new Menu("Help");
         MenuItem about = new MenuItem("No");
@@ -105,7 +108,7 @@ public class Padcode {
         VBox.setVgrow(menuBar, Priority.NEVER);
         menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
         fileMenu.getItems().addAll(newFile, openFile, openFolder, sep1, saveFile, saveAsFile, sep2, exit);
-        editMenu.getItems().addAll(undo, redo, sep3, cut, copy, paste);
+        editMenu.getItems().addAll(undo, redo, sep3, cut, copy, paste,sep4,font);
         helpMenu.getItems().add(about);
         // #endregion
 

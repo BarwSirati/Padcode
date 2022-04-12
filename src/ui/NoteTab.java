@@ -25,6 +25,7 @@ public class NoteTab extends Tab {
     private static int spaces = 4;
     TextArea note = createTextArea();
     File file;
+    public static Font font = Font.font("Consolas", FontWeight.NORMAL, 16);
 
     public NoteTab() {
         super("Uncoded");
@@ -126,9 +127,11 @@ public class NoteTab extends Tab {
     static public TextArea createTextArea() {
         TextArea temp = new TextArea();
         temp.setTextFormatter(getTabFormat());
-        temp.setFont(Font.font("Consolas", FontWeight.NORMAL, 16));
+        temp.setFont(font);
         return temp;
     }
+
+    
 
     public TextArea getNote() {
         return note;

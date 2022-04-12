@@ -24,6 +24,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import ui.FileTreeItem;
+import ui.FontSelectorDialog;
 import ui.NameFile;
 import ui.NoteTab;
 import ui.MyException.FileIsDirectoryException;
@@ -69,6 +70,20 @@ public class Controller {
             for (File file : list) {
                 newTabInTabPane(file);
             }
+        }
+    }
+
+    public void menuFont(ActionEvent e) {
+        try {
+            FontSelectorDialog dialog = new FontSelectorDialog(null);
+            dialog.setTitle("Font");
+            dialog.showAndWait();
+            NoteTab.font = dialog.getResult();
+            tabPane.getTabs().forEach(t -> {
+                ((NoteTab) t).getNote().setFont(NoteTab.font);
+            });
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -126,7 +141,8 @@ public class Controller {
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setHeaderText("This File Is Read-Only");
-            alert.setContentText("Read-only is a file attribute which only allows a user to view a file, restricting any writing to the file.");
+            alert.setContentText(
+                    "Read-only is a file attribute which only allows a user to view a file, restricting any writing to the file.");
             alert.showAndWait();
             menuSaveAs(e);
         }
