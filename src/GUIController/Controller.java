@@ -149,6 +149,7 @@ public class Controller {
             tab.setModified(false);
         } else {
             Alert alert = new Alert(AlertType.WARNING);
+            alert.initOwner(splitPane.getScene().getWindow());
             alert.setHeaderText("This File Is Read-Only");
             alert.setContentText(
                     "Read-only is a file attribute which only allows a user to view a file, restricting any writing to the file.");
@@ -237,6 +238,7 @@ public class Controller {
                 alert.setTitle("Padcode");
                 alert.setHeaderText("Do you want to save changes to " + tab.getText().replace("*", "") + "?");
                 alert.setGraphic(null);
+                alert.initOwner(splitPane.getScene().getWindow());
                 ButtonType yesButton = new ButtonType("Yes", ButtonData.YES);
                 ButtonType noButton = new ButtonType("No", ButtonData.NO);
                 ButtonType cancelButton = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);

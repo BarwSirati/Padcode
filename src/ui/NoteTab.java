@@ -78,6 +78,7 @@ public class NoteTab extends Tab {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setHeaderText("File Not Found");
             alert.setContentText(file.getName() + " cannot be found.");
+            alert.initOwner(this.getTabPane().getScene().getWindow());
             alert.show();
         } catch (IOException e) {
             System.out.println(e);
