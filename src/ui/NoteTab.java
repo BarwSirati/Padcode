@@ -22,22 +22,28 @@ public class NoteTab extends Tab {
     private static int spaces = 4;
     TextArea note = createTextArea();
     File file;
+    boolean modified = false;
     public static Font font = Font.font("Consolas", FontWeight.NORMAL, 16);
-
-    public NoteTab() {
-        super("Uncoded");
-        setContent(note);
-    }
 
     public NoteTab(String name) {
         super(name);
         setContent(note);
+        note.textProperty().addListener((ob, o, n) -> {
+            setModified(true);
+        });
+    }
+
+    public NoteTab() {
+        this("Uncoded");
     }
 
     public NoteTab(File file) throws FileIsDirectoryException, FileIsNotTextException {
         super(file.getName());
         setContent(note);
         setFile(file);
+        note.textProperty().addListener((ob, o, n) -> {
+            setModified(true);
+        });
     }
 
     public void setFile(File file) throws FileIsDirectoryException, FileIsNotTextException {
@@ -68,7 +74,7 @@ public class NoteTab extends Tab {
         try {
             text = new String(Files.readAllBytes(Paths.get(file.getPath())), StandardCharsets.UTF_8);
         } catch (NoSuchFileException e) {
-            text = ""; 
+            text = "";
             Alert alert = new Alert(AlertType.ERROR);
             alert.setHeaderText("File Not Found");
             alert.setContentText(file.getName() + " cannot be found.");
@@ -76,7 +82,7 @@ public class NoteTab extends Tab {
         } catch (IOException e) {
             System.out.println(e);
             text = e.toString();
-        } 
+        }
         note.setText(text);
     }
 
@@ -128,13 +134,29 @@ public class NoteTab extends Tab {
         return temp;
     }
 
-    
-
     public TextArea getNote() {
         return note;
     }
 
     public File getFile() {
         return file;
+    }
+
+    public boolean wasModified() {
+        return modified;
+    }
+
+    public void setModified(boolean value) {
+        if (value) { // modified: false -> true
+            if (!modified) {
+                modified = true;
+                setText(getText() + "*");
+            }
+        } else { // modified: true -> false
+            if (modified) {
+                modified = false;
+                setText(getText().replace("*", ""));
+            }
+        }
     }
 }

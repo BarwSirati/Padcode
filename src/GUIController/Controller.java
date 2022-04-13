@@ -9,12 +9,14 @@ import java.util.Stack;
 
 import javax.swing.filechooser.FileSystemView;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -54,8 +56,9 @@ public class Controller {
     @FXML // Double click on tabpane to create new tab
     public void createNewTab(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            if (event.getClickCount() == 2 && event.getTarget().toString().startsWith("TabPaneSkin")) {
-                Tab t = new NoteTab();
+            if (event.getClickCount() == 2 && !event.getTarget().toString().startsWith("TabPaneSkin")) {
+                NoteTab t = new NoteTab();
+                tabSetOnCloseRequest(t);
                 tabPane.getTabs().add(t);
                 tabPane.getSelectionModel().select(t);
             }
@@ -143,6 +146,7 @@ public class Controller {
         }
         if (tab.getFile().canWrite()) {
             saveTextToFile(tab.getFile(), tab.getNote());
+            tab.setModified(false);
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setHeaderText("This File Is Read-Only");
@@ -158,13 +162,14 @@ public class Controller {
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
         if (tab.getFile() != null) {
             saveChooser.setInitialDirectory(tab.getFile().getParentFile());
-            saveChooser.setInitialFileName(tab.getFile().getName());
+            saveChooser.setInitialFileName(tab.getFile().getName().replace("*", ""));
         } else {
-            saveChooser.setInitialFileName(tab.getText() + ".txt");
+            saveChooser.setInitialFileName(tab.getText().replace("*", "") + ".txt");
         }
         File file = saveChooser.showSaveDialog(null);
         if (file != null) {
             saveTextToFile(file, tab.getNote());
+            tab.setModified(false);
             tab.setText(file.getName());
             tab.setFileWithoutCheck(file);
         }
@@ -176,6 +181,10 @@ public class Controller {
 
     public void setTabPane(TabPane tabPane) {
         this.tabPane = tabPane;
+    }
+
+    public TabPane getTabPane() {
+        return tabPane;
     }
 
     public void setSplitPane(SplitPane splitPane) {
@@ -209,11 +218,37 @@ public class Controller {
             NoteTab noteTab = (NoteTab) tab2;
             if (noteTab.getFile() != null && noteTab.getFile().equals(file)) {
                 tabPane.getSelectionModel().select(tab2);
+                if (!noteTab.wasModified()) {
+                    updateNoteTab(noteTab);
+                }
                 return;
             }
         }
+        tabSetOnCloseRequest(tab);
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
+    }
+
+    public NoteTab tabSetOnCloseRequest(NoteTab tab) {
+        tab.setOnCloseRequest(event -> {
+            if (tab.wasModified()) {
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Padcode");
+                alert.setHeaderText("Do you want to save changes to " + tab.getText().replace("*", "") + "?");
+                alert.setGraphic(null);
+                ButtonType yesButton = new ButtonType("Yes", ButtonData.YES);
+                ButtonType noButton = new ButtonType("No", ButtonData.NO);
+                ButtonType cancelButton = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(yesButton, noButton, cancelButton);
+                var result = alert.showAndWait();
+                if (result.get() == yesButton) {
+                    menuSave(new ActionEvent());
+                } else if (result.get() == cancelButton) {
+                    event.consume();
+                }
+            }
+        });
+        return tab;
     }
 
     private void startNewBGWatcher(File file) {
@@ -255,12 +290,6 @@ public class Controller {
                                 searchParent = search;
                                 search = searchInTree(search, lookTo);
                             }
-                            // System.out.println("Search: " + search);
-                            // System.out.println("Target: " + target);
-                            // if (search != null) {
-                            //     System.out.println("Inside: " + search.getValue().getAbsolutePath());
-                            //     System.out.println("IsSame: " + target.equals(search.getValue()));
-                            // }
 
                             if (searchParent == null) {
                                 continue;
@@ -288,16 +317,16 @@ public class Controller {
                                     }
                                 }
                             } else if (ENTRY_MODIFY.equals(kind)) {
-                                // System.out.println("Entry was modified on log dir.");
-                                // if (search != null && search.getValue().isFile()) {
-                                // for (Tab tab2 : tabPane.getTabs()) {
-                                // NoteTab noteTab = (NoteTab) tab2;
-                                // if (noteTab.getFile() != null && noteTab.getFile().equals(search.getValue()))
-                                // {
-                                // updateNoteTab(noteTab);
-                                // }
-                                // }
-                                // }
+                                if (search != null && search.getValue().isFile()) {
+                                    for (Tab tab2 : tabPane.getTabs()) {
+                                        NoteTab noteTab = (NoteTab) tab2;
+                                        if (noteTab.getFile() != null && noteTab.getFile().equals(search.getValue())) {
+                                            if (!noteTab.wasModified()) {
+                                                Platform.runLater(() -> updateNoteTab(noteTab));
+                                            }
+                                        }
+                                    }
+                                }
                             } else if (ENTRY_DELETE.equals(kind)) {
                                 if (search != null) {
                                     searchParent.getChildren().remove(search);
@@ -331,6 +360,7 @@ public class Controller {
     void updateNoteTab(NoteTab noteTab) {
         try {
             noteTab.setFile(noteTab.getFile());
+            noteTab.setModified(false);
         } catch (FileIsDirectoryException | FileIsNotTextException e) {
             System.out.println("Bakana: " + e);
         }

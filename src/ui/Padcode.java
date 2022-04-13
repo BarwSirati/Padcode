@@ -21,7 +21,7 @@ public class Padcode {
     private TreeView<NameFile> explorerView;
     private TabPane tabPane;
     private HBox bottomBox;
-    private Controller controller = new Controller();
+    public Controller controller = new Controller();
 
     // initialize
     public Padcode() {
@@ -32,7 +32,7 @@ public class Padcode {
         MenuItem newFile = new MenuItem("New");
         newFile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         newFile.setOnAction(e -> {
-            var t = new NoteTab();
+            var t = controller.tabSetOnCloseRequest(new NoteTab());
             tabPane.getTabs().add(t);
             tabPane.getSelectionModel().select(t);
         });
@@ -116,7 +116,7 @@ public class Padcode {
         explorerView = new TreeView<>();
         explorerView.setOnMouseClicked(controller::selectItem);
         SplitPane.setResizableWithParent(explorerView, false);
-        tabPane = new TabPane(new NoteTab());
+        tabPane = new TabPane(controller.tabSetOnCloseRequest(new NoteTab()));
         tabPane.setOnMouseClicked(controller::createNewTab);
         tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
         tabPane.setTabDragPolicy(TabDragPolicy.REORDER);
