@@ -97,7 +97,7 @@ public class NoteTab extends Tab {
             if (type == null) {
                 return false;
             }
-            return type.startsWith("text");
+            return type.startsWith("text") || type.endsWith("json");
         } catch (IOException e) {
             return false;
         }
