@@ -139,6 +139,8 @@ public class Padcode {
         outerBox.setPrefSize(900, 600); // w h
 
         scene = new Scene(outerBox);
+
+        controller.initialize();
     }
 
     public Scene getScene() {

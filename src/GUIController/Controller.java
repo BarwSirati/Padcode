@@ -3,9 +3,15 @@ package GUIController;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.WatchEvent.Kind;
 import java.util.List;
+import java.util.Stack;
+
+import javax.swing.filechooser.FileSystemView;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -19,6 +25,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
@@ -30,12 +38,14 @@ import ui.NameFile;
 import ui.NoteTab;
 import ui.MyException.FileIsDirectoryException;
 import ui.MyException.FileIsNotTextException;
+import static java.nio.file.StandardWatchEventKinds.*;
+import com.sun.nio.file.ExtendedWatchEventModifier;
 
 public class Controller {
 
     @FXML
     private TreeView<NameFile> explorerView;
- 
+
     @FXML
     private TabPane tabPane;
     private SplitPane splitPane;
@@ -44,6 +54,16 @@ public class Controller {
     DirectoryChooser dirChooser = new DirectoryChooser();
     FileChooser saveChooser = new FileChooser();
     NameFile initialDir;
+    WatchService watcher;
+    Thread bgWatcher;
+
+    public void initialize() {
+        try {
+            watcher = FileSystems.getDefault().newWatchService();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
 
     @FXML // Double click on tabpane to create new tab
     public void createNewTab(MouseEvent event) {
@@ -87,7 +107,7 @@ public class Controller {
             }
         }
     }
-    
+
     public void menuOpenFolder(ActionEvent e) {
         if (initialDir != null) {
             dirChooser.setInitialDirectory(initialDir);
@@ -109,16 +129,14 @@ public class Controller {
             splitPane.setDividerPosition(0, 0.25);
         }
 
-        Task<Void> task = new Task<Void>() {
+        new Thread(new Task<Void>() {
             protected Void call() throws Exception {
-                TreeItem<NameFile> root = explorerView.getRoot();
-                for (var item : root.getChildren()) {
-                    item.getChildren();
-                }
+                explorerView.getRoot().getChildren().forEach(item -> item.getChildren());
                 return null;
             }
-        };
-        new Thread(task).start();
+        }).start();
+
+        startNewBGWatcher(file);
     }
 
     public void saveTextToFile(File file, TextArea content) {
@@ -210,5 +228,125 @@ public class Controller {
         }
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
+    }
+
+    private void startNewBGWatcher(File file) {
+        bgWatcher = new Thread(new Task<Void>() {
+            protected Void call() throws Exception {
+                Path logDir = file.toPath();
+                Kind<?>[] events = { ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE };
+                try {
+                    logDir.register(watcher, events, ExtendedWatchEventModifier.FILE_TREE);
+                    while (bgWatcher == Thread.currentThread()) {
+                        WatchKey key = watcher.take();
+                        for (WatchEvent<?> event : key.pollEvents()) {
+                            WatchEvent.Kind<?> kind = event.kind();
+                            Path correctPath = FileSystems.getDefault().getPath(logDir.toString(),
+                                    ((Path) event.context()).toString());
+                            File target = correctPath.toFile();
+                            if (target.isHidden()) {
+                                continue;
+                            }
+                            Stack<File> dirPath = new Stack<>();
+                            dirPath.add(target);
+                            boolean hiddenParent = false;
+                            for (File parent = target.getParentFile(); !parent.toPath().equals(logDir); parent = parent
+                                    .getParentFile()) {
+                                dirPath.add(parent);
+                                if (parent.isHidden()) {
+                                    hiddenParent = true;
+                                    break;
+                                }
+                            }
+                            if (hiddenParent) {
+                                continue;
+                            }
+
+                            TreeItem<NameFile> searchParent = null;
+                            TreeItem<NameFile> search = explorerView.getRoot();
+                            while (!dirPath.empty()) {
+                                File lookTo = dirPath.pop();
+                                searchParent = search;
+                                search = searchInTree(search, lookTo);
+                            }
+                            // System.out.println("Search: " + search);
+                            // System.out.println("Target: " + target);
+                            // if (search != null) {
+                            //     System.out.println("Inside: " + search.getValue().getAbsolutePath());
+                            //     System.out.println("IsSame: " + target.equals(search.getValue()));
+                            // }
+
+                            if (searchParent == null) {
+                                continue;
+                            }
+
+                            if (ENTRY_CREATE.equals(kind)) {
+                                if (search == null) {
+                                    Image ico = FileTreeItem.jswingIconToImage(
+                                            FileSystemView.getFileSystemView().getSystemIcon(target));
+                                    TreeItem<NameFile> item = new TreeItem<NameFile>(new NameFile(target));
+                                    item.setGraphic(new ImageView(ico));
+                                    boolean flag = true;
+                                    for (int i = 0; i < searchParent.getChildren().size(); i++) {
+                                        TreeItem<NameFile> child = searchParent.getChildren().get(i);
+                                        String itemName = item.getValue().getName().toLowerCase();
+                                        String childName = child.getValue().getName().toLowerCase();
+                                        if (itemName.compareTo(childName) < 0) {
+                                            searchParent.getChildren().add(i, item);
+                                            flag = false;
+                                            break;
+                                        }
+                                    }
+                                    if (flag) {
+                                        searchParent.getChildren().add(item);
+                                    }
+                                }
+                            } else if (ENTRY_MODIFY.equals(kind)) {
+                                // System.out.println("Entry was modified on log dir.");
+                                // if (search != null && search.getValue().isFile()) {
+                                // for (Tab tab2 : tabPane.getTabs()) {
+                                // NoteTab noteTab = (NoteTab) tab2;
+                                // if (noteTab.getFile() != null && noteTab.getFile().equals(search.getValue()))
+                                // {
+                                // updateNoteTab(noteTab);
+                                // }
+                                // }
+                                // }
+                            } else if (ENTRY_DELETE.equals(kind)) {
+                                if (search != null) {
+                                    searchParent.getChildren().remove(search);
+                                }
+                            }
+                        }
+                        key.reset();
+                    }
+                } catch (IOException | ClosedWatchServiceException ex) {
+                    System.out.println(ex);
+                }
+                return null;
+            }
+        });
+        bgWatcher.setDaemon(true);
+        bgWatcher.start();
+    }
+
+    private TreeItem<NameFile> searchInTree(TreeItem<NameFile> tree, File lookTo) {
+        if (tree == null) {
+            return null;
+        }
+        for (TreeItem<NameFile> treeItem : tree.getChildren()) {
+            if (treeItem.getValue().equals(lookTo)) {
+                return treeItem;
+            }
+        }
+        return null;
+    }
+
+    void updateNoteTab(NoteTab noteTab) {
+        try {
+            noteTab.setFile(noteTab.getFile());
+        } catch (FileIsDirectoryException | FileIsNotTextException e) {
+            System.out.println("Bakana: " + e);
+        }
     }
 }
