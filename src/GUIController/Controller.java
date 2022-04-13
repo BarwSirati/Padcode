@@ -38,7 +38,7 @@ public class Controller {
     private TabPane tabPane;
     private SplitPane splitPane;
 
-    FileChooser fileChooser = new FileChooser();
+    FileChooser fileChooser = new FileChooser();    
     DirectoryChooser dirChooser = new DirectoryChooser();
     FileChooser saveChooser = new FileChooser();
     NameFile initialDir;
@@ -211,6 +211,7 @@ public class Controller {
             tab.setFileWithoutCheck(file);
             tab.getNote().setText("This file is binary and cannot be displayed.");
             tab.getNote().setEditable(false);
+            tab.setModified(false);
         } catch (FileIsDirectoryException e2) {
             return;
         }
