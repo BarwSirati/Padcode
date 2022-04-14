@@ -23,7 +23,7 @@ public class NoteTab extends Tab {
     TextArea note = createTextArea();
     File file;
     boolean modified = false;
-    public static Font font = Font.font("Consolas", FontWeight.NORMAL, 16);
+    public static Font font = Font.font("Consolas", FontWeight.NORMAL, 18);
 
     public NoteTab(String name) {
         super(name);

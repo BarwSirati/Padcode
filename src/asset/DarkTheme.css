@@ -1,0 +1,171 @@
+* {
+    -fx-focus-color: transparent;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-background-radius: 0em;
+    dark-area: rgb(30, 30, 30);
+    dark-shade: rgb(50, 50, 50);
+    dark-shade2: rgb(60, 60, 60);
+    dark-shade3: rgb(70, 70, 70);
+}
+
+/* Text Area */
+.text-area {
+    -fx-text-fill: #ffffff;
+    -fx-border-color: dark-area;
+    -fx-background-color: dark-area;
+}
+
+.text-area .content {
+    -fx-background-color: dark-area;
+}
+
+.text-area .scroll-bar:vertical,
+.text-area .scroll-bar:horizontal {
+    -fx-background-color: dark-shade;
+}
+
+.text-area .scroll-bar:vertical .thumb,
+.text-area .scroll-bar:horizontal .thumb {
+    -fx-background-color: dark-shade2;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.text-area .scroll-bar:vertical:hover .thumb,
+.text-area .scroll-bar:horizontal:hover .thumb {
+    -fx-background-color: dark-shade3;
+}
+
+.text-area .scroll-bar:vertical:pressed .thumb,
+.text-area .scroll-bar:horizontal:pressed .thumb {
+    -fx-background-color: dark-shade2;
+}
+
+.increment-button,
+.decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}
+
+.tab-down-button {
+    -fx-background-color: dark-shade2;
+}
+
+.tab-down-button .arrow {
+    -fx-background-color: white;
+}
+
+/* Tab Pane */
+.tab-pane {
+    -fx-tab-min-height: 28px;
+    -fx-tab-max-height: 28px;
+}
+
+.tab-pane:top *.tab-header-background {
+    -fx-background-color: dark-shade;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-padding: 0 0 0 0;
+}
+
+.tab {
+    -fx-background-color: dark-shade2;
+    -fx-font-size: 13;
+}
+
+.tab:selected {
+    -fx-background-color: dark-area;
+}
+
+.tab *.tab-label {
+    -fx-text-fill: white;
+}
+
+/* Split Pane */
+.split-pane {
+    -fx-background-color: dark-shade;
+}
+
+.split-pane-divider {
+    -fx-padding: 1;
+    -fx-background-color: transparent;
+}
+
+/* Treeview */
+.tree-view,
+.tree-cell {
+    -fx-background-color: dark-shade;
+    -fx-text-fill: white;
+}
+
+.tree-cell .tree-disclosure-node .arrow {
+    -fx-background-color: white;
+}
+
+.tree-cell:expanded .tree-disclosure-node .arrow {
+    -fx-background-color: white;
+}
+
+.tree-cell:selected {
+    -fx-font-weight: bold;
+    -fx-background-color: rgb(80, 90, 110) !important;
+}
+
+.tree-view .scroll-bar:vertical,
+.tree-view .scroll-bar:horizontal {
+    -fx-background-color: dark-shade;
+}
+
+.tree-view .scroll-bar:vertical .thumb,
+.tree-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: dark-shade2;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.tree-view .scroll-bar:vertical:hover .thumb,
+.tree-view .scroll-bar:horizontal:hover .thumb {
+    -fx-background-color: dark-shade3;
+}
+
+.tree-view .scroll-bar:vertical:pressed .thumb,
+.tree-view .scroll-bar:horizontal:pressed .thumb {
+    -fx-background-color: dark-shade2;
+}
+
+.tree-view .virtual-flow .corner {
+    -fx-background-color: transparent;
+}
+
+/* Menu */
+.menu-bar {
+    -fx-background-color: dark-shade3;
+}
+
+.menu-bar .menu-button:hover,
+.menu-bar .menu-button:focused,
+.menu-bar .menu-button:showing {
+    -fx-background-color: dark-shade2;
+}
+
+.menu .label,
+.menu-item .label {
+    -fx-text-fill: white;
+}
+
+.context-menu {
+    -fx-background-color: dark-shade;
+}
+
+/* Specific */
+#HBox {
+    -fx-background-color: rgb(0, 120, 200);
+}
+
+#status {
+    -fx-text-fill: white;
+}

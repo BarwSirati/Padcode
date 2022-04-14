@@ -70,7 +70,11 @@ public class Controller {
             FontSelectorDialog dialog = new FontSelectorDialog(null);
             dialog.setTitle("Font");
             dialog.showAndWait();
-            NoteTab.font = dialog.getResult();
+            var result = dialog.getResult();
+            if (result == null) {
+                return;
+            }
+            NoteTab.font = result;
             tabPane.getTabs().forEach(t -> {
                 ((NoteTab) t).getNote().setFont(NoteTab.font);
             });
@@ -365,7 +369,7 @@ public class Controller {
             noteTab.setFile(noteTab.getFile());
             noteTab.setModified(false);
         } catch (FileIsDirectoryException | FileIsNotTextException e) {
-            System.out.println("Bakana: " + e);
+            
         }
     }
 }

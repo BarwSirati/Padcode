@@ -14,6 +14,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Padcode padcode = new Padcode();
+        padcode.getScene().getStylesheets().add(this.getClass().getClassLoader().getResource("./asset/DarkTheme.css").toString());
         primaryStage.setScene(padcode.getScene());
         primaryStage.setTitle("Padcode");
         primaryStage.getIcons().add(new Image(App.class.getResourceAsStream("/asset/img/icon.png")));

@@ -129,9 +129,12 @@ public class Padcode {
         // #endregion
 
         //#endregion Bottom
-        bottomBox = new HBox(5, new Label("Status"));
+        Label status = new Label("Status");
+        status.setId("status");
+        bottomBox = new HBox(5, status);
         bottomBox.setAlignment(Pos.CENTER_LEFT);
         bottomBox.setPadding(new Insets(3, 3, 3, 3)); // t r b l
+        bottomBox.setId("HBox");
         VBox.setVgrow(bottomBox, Priority.NEVER);
         //#region
 
