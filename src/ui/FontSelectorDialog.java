@@ -321,7 +321,6 @@ public class FontSelectorDialog extends Dialog<Font> {
         }
 
         private void refreshSample() {
-            System.out.println(getFont());
             sample.setFont(getFont());
         }
 
