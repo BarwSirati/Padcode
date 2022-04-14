@@ -2,43 +2,50 @@
     -fx-focus-color: transparent;
     -fx-background-insets: 0, 0, 0, 0;
     -fx-background-radius: 0em;
-    dark-area: rgb(30, 30, 30);
-    dark-shade: rgb(50, 50, 50);
-    dark-shade2: rgb(60, 60, 60);
-    dark-shade3: rgb(70, 70, 70);
+    shade1: rgb(30, 30, 30);
+    shade2: rgb(50, 50, 50);
+    shade3: rgb(60, 60, 60);
+    shade4: rgb(70, 70, 70);
+    menu-text-color: white;
+    menu-hover-text-color: white;
+    menu-item-text-color: white;
+    tab-text-color: white;
+    arrow-color: white;
+    leaf-select: rgb(80, 90, 110);
+    text-area-text-color: white;
 }
 
 /* Text Area */
 .text-area {
-    -fx-text-fill: #ffffff;
-    -fx-border-color: dark-area;
-    -fx-background-color: dark-area;
+    -fx-text-fill: text-area-text-color;
+    -fx-border-color: shade1;
+    -fx-background-color: shade1;
 }
 
 .text-area .content {
-    -fx-background-color: dark-area;
+    -fx-background-color: shade1;
 }
 
 .text-area .scroll-bar:vertical,
 .text-area .scroll-bar:horizontal {
-    -fx-background-color: dark-shade;
+    -fx-background-color: shade2;
 }
 
 .text-area .scroll-bar:vertical .thumb,
 .text-area .scroll-bar:horizontal .thumb {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
     -fx-background-insets: 0, 0, 0;
     -fx-background-radius: 0em;
 }
 
 .text-area .scroll-bar:vertical:hover .thumb,
 .text-area .scroll-bar:horizontal:hover .thumb {
-    -fx-background-color: dark-shade3;
+    -fx-background-color: shade4;
 }
 
 .text-area .scroll-bar:vertical:pressed .thumb,
 .text-area .scroll-bar:horizontal:pressed .thumb {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
 }
 
 .increment-button,
@@ -51,11 +58,11 @@
 }
 
 .tab-down-button {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
 }
 
 .tab-down-button .arrow {
-    -fx-background-color: white;
+    -fx-background-color: arrow-color;
 }
 
 /* Tab Pane */
@@ -65,7 +72,7 @@
 }
 
 .tab-pane:top *.tab-header-background {
-    -fx-background-color: dark-shade;
+    -fx-background-color: shade2;
 }
 
 .tab-pane:top *.tab-header-area {
@@ -73,21 +80,21 @@
 }
 
 .tab {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
     -fx-font-size: 13;
 }
 
 .tab:selected {
-    -fx-background-color: dark-area;
+    -fx-background-color: shade1;
 }
 
 .tab *.tab-label {
-    -fx-text-fill: white;
+    -fx-text-fill: tab-text-color;
 }
 
 /* Split Pane */
 .split-pane {
-    -fx-background-color: dark-shade;
+    -fx-background-color: shade2;
 }
 
 .split-pane-divider {
@@ -98,43 +105,43 @@
 /* Treeview */
 .tree-view,
 .tree-cell {
-    -fx-background-color: dark-shade;
-    -fx-text-fill: white;
+    -fx-background-color: shade2;
+    -fx-text-fill: menu-item-text-color;
 }
 
 .tree-cell .tree-disclosure-node .arrow {
-    -fx-background-color: white;
+    -fx-background-color: arrow-color;
 }
 
 .tree-cell:expanded .tree-disclosure-node .arrow {
-    -fx-background-color: white;
+    -fx-background-color: arrow-color;
 }
 
 .tree-cell:selected {
     -fx-font-weight: bold;
-    -fx-background-color: rgb(80, 90, 110) !important;
+    -fx-background-color: leaf-select !important;
 }
 
 .tree-view .scroll-bar:vertical,
 .tree-view .scroll-bar:horizontal {
-    -fx-background-color: dark-shade;
+    -fx-background-color: shade2;
 }
 
 .tree-view .scroll-bar:vertical .thumb,
 .tree-view .scroll-bar:horizontal .thumb {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
     -fx-background-insets: 0, 0, 0;
     -fx-background-radius: 0em;
 }
 
 .tree-view .scroll-bar:vertical:hover .thumb,
 .tree-view .scroll-bar:horizontal:hover .thumb {
-    -fx-background-color: dark-shade3;
+    -fx-background-color: shade4;
 }
 
 .tree-view .scroll-bar:vertical:pressed .thumb,
 .tree-view .scroll-bar:horizontal:pressed .thumb {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
 }
 
 .tree-view .virtual-flow .corner {
@@ -143,22 +150,30 @@
 
 /* Menu */
 .menu-bar {
-    -fx-background-color: dark-shade3;
+    -fx-background-color: shade4;
 }
 
 .menu-bar .menu-button:hover,
 .menu-bar .menu-button:focused,
 .menu-bar .menu-button:showing {
-    -fx-background-color: dark-shade2;
+    -fx-background-color: shade3;
 }
 
-.menu .label,
+.menu .label {
+    -fx-text-fill: menu-text-color;
+}
+
+.menu:hover .label,
+.menu:showing .label {
+    -fx-text-fill: menu-hover-text-color;
+}
+
 .menu-item .label {
-    -fx-text-fill: white;
+    -fx-text-fill: menu-item-text-color;
 }
 
 .context-menu {
-    -fx-background-color: dark-shade;
+    -fx-background-color: shade2;
 }
 
 /* Specific */
