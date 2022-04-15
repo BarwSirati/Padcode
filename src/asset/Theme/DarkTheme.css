@@ -82,6 +82,7 @@
 .tab {
     -fx-background-color: shade3;
     -fx-font-size: 13;
+    -fx-faint-focus-color: transparent;
 }
 
 .tab:selected {
@@ -94,6 +95,7 @@
 
 /* Split Pane */
 .split-pane {
+    -fx-padding: 0;
     -fx-background-color: shade2;
 }
 
