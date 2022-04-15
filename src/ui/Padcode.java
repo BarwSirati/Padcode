@@ -58,16 +58,17 @@ public class Padcode {
         undo.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN));
         undo.setOnAction(e -> {
             Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null)
-                ((TextArea)t.getContent()).undo();
+            if (t != null && t.getContent() instanceof TextArea ta) {
+                ta.undo();
+            }
         });
 
         MenuItem redo = new MenuItem("Redo");
         redo.setAccelerator(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
         redo.setOnAction(e -> {
             Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null) {
-                ((TextArea)t.getContent()).redo();
+            if (t != null && t.getContent() instanceof TextArea ta) {
+                ta.redo();
             }
         });
 
@@ -76,8 +77,8 @@ public class Padcode {
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN));
         cut.setOnAction(e -> {
             Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null) {
-                ((TextArea)t.getContent()).cut();
+            if (t != null && t.getContent() instanceof TextArea ta) {
+                ta.cut();
             }
         });
 
@@ -85,8 +86,8 @@ public class Padcode {
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
         copy.setOnAction(e -> {
             Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null) {
-                ((TextArea)t.getContent()).copy();
+            if (t != null && t.getContent() instanceof TextArea ta) {
+                ta.copy();
             }
         });
 
@@ -94,8 +95,8 @@ public class Padcode {
         paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
         paste.setOnAction(e -> {
             Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null) {
-                ((TextArea)t.getContent()).paste();
+            if (t != null && t.getContent() instanceof TextArea ta) {
+                ta.paste();
             }
         });
         SeparatorMenuItem sep4 = new SeparatorMenuItem();
