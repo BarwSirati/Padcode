@@ -1,0 +1,192 @@
+* {
+    -fx-focus-color: transparent;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-background-radius: 0em;
+    shade1: #F7FBFC;
+    shade2: #B9D7EA;
+    shade3: #a0dbff;
+    shade4: rgb(17, 34, 51);
+    menu-text-color: white;
+    menu-hover-text-color: black;
+    menu-item-text-color: black;
+    tab-text-color: black;
+    arrow-color: black;
+    leaf-select: derive(shade2, 60%);
+    -fx-accent: leaf-select;
+    text-area-text-color: black;
+}
+
+/* Text Area */
+.text-area {
+    -fx-text-fill: text-area-text-color;
+    -fx-highlight-fill: #0093ff;
+    -fx-border-color: shade1;
+    -fx-background-color: shade1;
+}
+
+.text-area .content {
+    -fx-background-color: shade1;
+}
+
+.text-area .scroll-bar:vertical,
+.text-area .scroll-bar:horizontal {
+    -fx-background-color: shade2;
+}
+
+.text-area .scroll-bar:vertical .thumb,
+.text-area .scroll-bar:horizontal .thumb {
+    -fx-background-color: shade3;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.text-area .scroll-bar:vertical:hover .thumb,
+.text-area .scroll-bar:horizontal:hover .thumb {
+    -fx-background-color: derive(shade3, -10%);
+}
+
+.text-area .scroll-bar:vertical:pressed .thumb,
+.text-area .scroll-bar:horizontal:pressed .thumb {
+    -fx-background-color: shade3;
+}
+
+.increment-button,
+.decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}
+
+.tab-down-button {
+    -fx-background-color: shade3;
+}
+
+.tab-down-button .arrow {
+    -fx-background-color: arrow-color;
+}
+
+/* Tab Pane */
+.tab-pane {
+    -fx-tab-min-height: 28px;
+    -fx-tab-max-height: 28px;
+    -fx-open-tab-animation: NONE;
+    -fx-close-tab-animation: NONE;
+}
+
+.tab-pane:top *.tab-header-background {
+    -fx-background-color: shade2;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-padding: 0 0 0 0;
+}
+
+.tab {
+    -fx-background-color: shade3;
+    -fx-font-size: 13;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab:selected {
+    -fx-background-color: shade1;
+}
+
+.tab *.tab-label {
+    -fx-text-fill: tab-text-color;
+}
+
+/* Split Pane */
+.split-pane {
+    -fx-padding: 0;
+    -fx-background-color: shade2;
+}
+
+.split-pane-divider {
+    -fx-padding: 1;
+    -fx-background-color: transparent;
+}
+
+/* Treeview */
+.tree-view,
+.tree-cell {
+    -fx-background-color: shade2;
+    -fx-text-fill: menu-item-text-color;
+}
+
+.tree-cell .tree-disclosure-node .arrow {
+    -fx-background-color: arrow-color;
+}
+
+.tree-cell:expanded .tree-disclosure-node .arrow {
+    -fx-background-color: arrow-color;
+}
+
+.tree-cell:selected {
+    -fx-font-weight: bold;
+    -fx-background-color: leaf-select !important;
+}
+
+.tree-view .scroll-bar:vertical,
+.tree-view .scroll-bar:horizontal {
+    -fx-background-color: shade2;
+}
+
+.tree-view .scroll-bar:vertical .thumb,
+.tree-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: shade3;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.tree-view .scroll-bar:vertical:hover .thumb,
+.tree-view .scroll-bar:horizontal:hover .thumb {
+    -fx-background-color: derive(shade3, -10%);
+}
+
+.tree-view .scroll-bar:vertical:pressed .thumb,
+.tree-view .scroll-bar:horizontal:pressed .thumb {
+    -fx-background-color: shade3;
+}
+
+.tree-view .virtual-flow .corner {
+    -fx-background-color: transparent;
+}
+
+/* Menu */
+.menu-bar {
+    -fx-background-color: shade4;
+}
+
+.menu-bar .menu-button:hover,
+.menu-bar .menu-button:focused,
+.menu-bar .menu-button:showing {
+    -fx-background-color: shade3;
+}
+
+.menu .label {
+    -fx-text-fill: menu-text-color;
+}
+
+.menu:hover .label,
+.menu:showing .label {
+    -fx-text-fill: menu-hover-text-color;
+}
+
+.menu-item .label {
+    -fx-text-fill: menu-item-text-color;
+}
+
+.context-menu {
+    -fx-background-color: shade2;
+}
+
+/* Specific */
+#HBox {
+    -fx-background-color: rgb(0, 120, 200);
+}
+
+#status {
+    -fx-text-fill: white;
+}
