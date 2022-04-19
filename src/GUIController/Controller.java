@@ -9,14 +9,20 @@ import java.util.Stack;
 
 import javax.swing.filechooser.FileSystemView;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.TabPane.TabDragPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -24,6 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Duration;
 import ui.*;
 import ui.MyException.*;
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -38,7 +45,7 @@ public class Controller {
     private TabPane tabPane;
     private SplitPane splitPane;
 
-    FileChooser fileChooser = new FileChooser();    
+    FileChooser fileChooser = new FileChooser();
     DirectoryChooser dirChooser = new DirectoryChooser();
     FileChooser saveChooser = new FileChooser();
     NameFile initialDir;
@@ -59,6 +66,7 @@ public class Controller {
             if (event.getClickCount() == 2 && !event.getTarget().toString().startsWith("TabPaneSkin")) {
                 NoteTab t = new NoteTab();
                 tabSetOnCloseRequest(t);
+                t.setModified(false);
                 tabPane.getTabs().add(t);
                 tabPane.getSelectionModel().select(t);
             }
@@ -114,16 +122,21 @@ public class Controller {
         if (file == null) {
             return;
         }
-        initialDir = new NameFile(file);
-        FileTreeItem root = new FileTreeItem(initialDir);
-        root.setExpanded(true);
-        explorerView.setRoot(root);
-        if (splitPane.getDividerPositions()[0] < 0.01) {
-            splitPane.setDividerPosition(0, 0.25);
-        }
 
         new Thread(new Task<Void>() {
             protected Void call() throws Exception {
+                initialDir = new NameFile(file);
+                FileTreeItem root = new FileTreeItem(initialDir);
+                root.setExpanded(true);
+                Platform.runLater(() -> explorerView.setRoot(root));
+                if (splitPane.getDividerPositions()[0] < 0.01) {
+                    Platform.runLater(() -> {
+                        KeyValue keyValue = new KeyValue(splitPane.getDividers().get(0).positionProperty(), 0.25,
+                                Interpolator.EASE_OUT);
+                        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), keyValue));
+                        timeline.play();
+                    });
+                }
                 explorerView.getRoot().getChildren().forEach(item -> item.getChildren());
                 return null;
             }
@@ -142,7 +155,7 @@ public class Controller {
         }
     }
 
-    public void menuSave(ActionEvent e) {
+    public void menuSave(Event e) {
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
         if (tab.getFile() == null) {
             menuSaveAs(e);
@@ -162,7 +175,7 @@ public class Controller {
         }
     }
 
-    public void menuSaveAs(ActionEvent e) {
+    public void menuSaveAs(Event e) {
         saveChooser.getExtensionFilters().addAll(new ExtensionFilter("All Files", "*.*"));
         NoteTab tab = (NoteTab) tabPane.getSelectionModel().getSelectedItem();
         if (tab.getFile() != null) {
@@ -177,6 +190,10 @@ public class Controller {
             tab.setModified(false);
             tab.setText(file.getName());
             tab.setFileWithoutCheck(file);
+        } else {
+            e.consume();
+            tabPane.setTabDragPolicy(TabDragPolicy.FIXED);
+            new Timeline(new KeyFrame(Duration.millis(1000), ae -> tabPane.setTabDragPolicy(TabDragPolicy.REORDER))).play();
         }
     }
 
@@ -249,9 +266,12 @@ public class Controller {
                 alert.getButtonTypes().setAll(yesButton, noButton, cancelButton);
                 var result = alert.showAndWait();
                 if (result.get() == yesButton) {
-                    menuSave(new ActionEvent());
+                    menuSave(event);
                 } else if (result.get() == cancelButton) {
                     event.consume();
+                    tabPane.setTabDragPolicy(TabDragPolicy.FIXED);
+                    new Timeline(new KeyFrame(Duration.millis(1000), ae -> tabPane.setTabDragPolicy(TabDragPolicy.REORDER))).play();
+                    // There is a bug when you consume event and you instantly drag a tab
                 }
             }
         });
@@ -369,7 +389,7 @@ public class Controller {
             noteTab.setFile(noteTab.getFile());
             noteTab.setModified(false);
         } catch (FileIsDirectoryException | FileIsNotTextException e) {
-            
+
         }
     }
 }
