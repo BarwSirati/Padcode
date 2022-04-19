@@ -69,6 +69,8 @@
 .tab-pane {
     -fx-tab-min-height: 28px;
     -fx-tab-max-height: 28px;
+    -fx-open-tab-animation: NONE;
+    -fx-close-tab-animation: NONE;
 }
 
 .tab-pane:top *.tab-header-background {
@@ -185,4 +187,12 @@
 
 #status {
     -fx-text-fill: white;
+}
+
+.radio-menu-item:checked > .left-container > .radio {
+    -fx-background-color: white;
+}
+
+.radio-menu-item:focused:checked > .left-container > .radio {
+    -fx-background-color: white;
 }
