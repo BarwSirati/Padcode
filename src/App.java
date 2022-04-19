@@ -1,9 +1,13 @@
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import ui.NoteTab;
 import ui.Padcode;
 
 public class App extends Application {
@@ -14,28 +18,36 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Padcode padcode = new Padcode();
-        padcode.getScene().getStylesheets().add(this.getClass().getClassLoader().getResource("./asset/Theme/DarkPink.css").toString());
         primaryStage.setScene(padcode.getScene());
         primaryStage.setTitle("Padcode");
         primaryStage.getIcons().add(new Image(App.class.getResourceAsStream("/asset/img/icon.png")));
         primaryStage.setOnCloseRequest(winEvent -> {
             var tabs = padcode.controller.getTabPane().getTabs();
             int tabsCount = tabs.size();
-            boolean[] check = new boolean[tabsCount];
             for (int i = 0; i < tabsCount; i++) {
-                Tab t = tabs.get(0);
-                Event te = new Event(Tab.CLOSED_EVENT);
+                NoteTab t = (NoteTab) tabs.get(0);
+                Event te = new Event(Tab.TAB_CLOSE_REQUEST_EVENT);
                 t.getOnCloseRequest().handle(te);
-                check[i] = te.isConsumed();
                 if (!te.isConsumed()) {
-                    Platform.runLater(() -> tabs.remove(0));
+                    tabs.remove(0);
+                } else {
+                    winEvent.consume();
+                    return;
                 }
             }
-            for (int i = 0; i < check.length; i++) {
-                if (check[i]) {
-                    winEvent.consume();
-                    break;
-                }
+            if (tabs.size() > 0) {
+                winEvent.consume();
+            }
+        });
+        padcode.getScene().setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.F5) {
+                TabPane tp = padcode.controller.getTabPane();
+                Tab selecting = tp.getSelectionModel().getSelectedItem();
+                ObservableList<Tab> tabs = FXCollections.observableArrayList();
+                tabs.addAll(tp.getTabs());
+                tp.getTabs().clear();
+                tp.getTabs().addAll(tabs);
+                tp.getSelectionModel().select(selecting);
             }
         });
         primaryStage.show();
