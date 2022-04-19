@@ -1,7 +1,11 @@
 package ui;
 
+import java.util.function.Consumer;
+
 import GUIController.Controller;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,6 +37,7 @@ public class Padcode {
         newFile.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
         newFile.setOnAction(e -> {
             var t = controller.tabSetOnCloseRequest(new NoteTab());
+            t.setModified(false);
             tabPane.getTabs().add(t);
             tabPane.getSelectionModel().select(t);
         });
@@ -40,76 +45,55 @@ public class Padcode {
         openFile.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
         openFile.setOnAction(controller::menuOpenFile);
         MenuItem openFolder = new MenuItem("Open Folder...");
-        openFolder.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        openFolder.setAccelerator(
+                new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         openFolder.setOnAction(controller::menuOpenFolder);
         SeparatorMenuItem sep1 = new SeparatorMenuItem();
         MenuItem saveFile = new MenuItem("Save");
         saveFile.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
         saveFile.setOnAction(controller::menuSave);
         MenuItem saveAsFile = new MenuItem("Save As...");
-        saveAsFile.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        saveAsFile.setAccelerator(
+                new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
         saveAsFile.setOnAction(controller::menuSaveAs);
         SeparatorMenuItem sep2 = new SeparatorMenuItem();
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(e -> Platform.exit());
-        
+
         Menu editMenu = new Menu("Edit");
         MenuItem undo = new MenuItem("Undo");
         undo.setAccelerator(new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN));
-        undo.setOnAction(e -> {
-            Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null && t.getContent() instanceof TextArea ta) {
-                ta.undo();
-            }
-        });
+        undo.setOnAction(e -> currentTextArea(TextArea::undo));
 
         MenuItem redo = new MenuItem("Redo");
         redo.setAccelerator(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN));
-        redo.setOnAction(e -> {
-            Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null && t.getContent() instanceof TextArea ta) {
-                ta.redo();
-            }
-        });
+        redo.setOnAction(e -> currentTextArea(TextArea::redo));
 
         SeparatorMenuItem sep3 = new SeparatorMenuItem();
         MenuItem cut = new MenuItem("Cut");
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN));
-        cut.setOnAction(e -> {
-            Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null && t.getContent() instanceof TextArea ta) {
-                ta.cut();
-            }
-        });
+        cut.setOnAction(e -> currentTextArea(TextArea::cut));
 
         MenuItem copy = new MenuItem("Copy");
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
-        copy.setOnAction(e -> {
-            Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null && t.getContent() instanceof TextArea ta) {
-                ta.copy();
-            }
-        });
+        copy.setOnAction(e -> currentTextArea(TextArea::copy));
 
         MenuItem paste = new MenuItem("Paste");
         paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
-        paste.setOnAction(e -> {
-            Tab t = tabPane.getSelectionModel().getSelectedItem();
-            if (t != null && t.getContent() instanceof TextArea ta) {
-                ta.paste();
-            }
-        });
+        paste.setOnAction(e -> currentTextArea(TextArea::paste));
         SeparatorMenuItem sep4 = new SeparatorMenuItem();
         MenuItem font = new MenuItem("Font");
         font.setOnAction(controller::menuFont);
+
+        Menu themeMenu = new Menu("Theme");
 
         Menu helpMenu = new Menu("Help");
         MenuItem about = new MenuItem("No");
 
         VBox.setVgrow(menuBar, Priority.NEVER);
-        menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, themeMenu, helpMenu);
         fileMenu.getItems().addAll(newFile, openFile, openFolder, sep1, saveFile, saveAsFile, sep2, exit);
-        editMenu.getItems().addAll(undo, redo, sep3, cut, copy, paste,sep4,font);
+        editMenu.getItems().addAll(undo, redo, sep3, cut, copy, paste, sep4, font);
         helpMenu.getItems().add(about);
         // #endregion
 
@@ -124,12 +108,9 @@ public class Padcode {
         SplitPane splitPane = new SplitPane(explorerView, tabPane);
         splitPane.setDividerPosition(0, 0);
         VBox.setVgrow(splitPane, Priority.ALWAYS);
-        controller.setExplorerView(explorerView);
-        controller.setTabPane(tabPane);
-        controller.setSplitPane(splitPane);
         // #endregion
 
-        //#endregion Bottom
+        // #region Bottom
         Label status = new Label("Status");
         status.setId("status");
         bottomBox = new HBox(5, status);
@@ -137,13 +118,26 @@ public class Padcode {
         bottomBox.setPadding(new Insets(3, 3, 3, 3)); // t r b l
         bottomBox.setId("HBox");
         VBox.setVgrow(bottomBox, Priority.NEVER);
-        //#region
+        // #endregion
 
         outerBox = new VBox(menuBar, splitPane, bottomBox);
         outerBox.setPrefSize(900, 600); // w h
 
         scene = new Scene(outerBox);
 
+        ToggleGroup tg = new ToggleGroup();
+        RadioMenuItem modena = new RadioMenuItem("Modena");
+        modena.setOnAction(e -> scene.getStylesheets().clear());
+        modena.setToggleGroup(tg);
+        themeMenu.getItems().add(modena);
+        createThemeItem(themeMenu, "Dark", tg);
+        createThemeItem(themeMenu, "DarkPink", tg);
+        createThemeItem(themeMenu, "Grey", tg);
+        createThemeItem(themeMenu, "Winter", tg).setSelected(true);
+
+        controller.setExplorerView(explorerView);
+        controller.setTabPane(tabPane);
+        controller.setSplitPane(splitPane);
         controller.initialize();
     }
 
@@ -151,4 +145,26 @@ public class Padcode {
         return scene;
     }
 
+    private void currentTextArea(Consumer<TextArea> action) {
+        Tab t = tabPane.getSelectionModel().getSelectedItem();
+        if (t != null && t.getContent() instanceof TextArea ta) {
+            action.accept(ta);
+        }
+    }
+
+    private RadioMenuItem createThemeItem(Menu themeMenu, String name, ToggleGroup tg) {
+        RadioMenuItem themeItem = new RadioMenuItem(name);
+        themeItem.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> ob, Boolean old_val, Boolean new_val) {
+                if (!old_val && new_val) {
+                    scene.getStylesheets().clear();
+                    scene.getStylesheets().add(
+                            getClass().getClassLoader().getResource("./asset/Theme/" + name + ".css").toString());
+                }
+            }
+        });
+        themeItem.setToggleGroup(tg);
+        themeMenu.getItems().add(themeItem);
+        return themeItem;
+    }
 }
