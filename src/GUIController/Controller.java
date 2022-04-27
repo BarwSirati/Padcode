@@ -151,7 +151,7 @@ public class Controller {
             return;
         }
 
-        new Thread(new Task<Void>() {
+        Thread openExplorer = new Thread(new Task<Void>() {
             protected Void call() throws Exception {
                 initialDir = new NameFile(file);
                 FileTreeItem root = new FileTreeItem(initialDir);
@@ -165,10 +165,17 @@ public class Controller {
                         timeline.play();
                     });
                 }
-                explorerView.getRoot().getChildren().forEach(item -> item.getChildren());
+                explorerView.getRoot().getChildren().forEach(TreeItem::getChildren);
                 return null;
             }
-        }).start();
+        });
+
+        Platform.runLater(() -> {
+            if (!splitPane.getItems().contains(explorerView)) {
+                splitPane.getItems().add(0, explorerView);
+            }
+            openExplorer.start();
+        });
 
         startNewBGWatcher(file);
     }

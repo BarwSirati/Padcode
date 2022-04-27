@@ -107,7 +107,7 @@ public class Padcode {
         tabPane.setOnMouseClicked(controller::createNewTab);
         tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
         tabPane.setTabDragPolicy(TabDragPolicy.REORDER);
-        SplitPane splitPane = new SplitPane(explorerView, tabPane);
+        SplitPane splitPane = new SplitPane(tabPane);
         splitPane.setDividerPosition(0, 0);
         VBox.setVgrow(splitPane, Priority.ALWAYS);
         // #endregion
