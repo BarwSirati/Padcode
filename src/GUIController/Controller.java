@@ -37,6 +37,7 @@ import static java.nio.file.StandardWatchEventKinds.*;
 import com.sun.nio.file.ExtendedWatchEventModifier;
 
 public class Controller {
+    public static String[] args;
 
     @FXML
     private TreeView<NameFile> explorerView;
@@ -57,6 +58,29 @@ public class Controller {
             watcher = FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
             System.out.println(e);
+        }
+
+        if (args.length > 0) {
+            File openWith = null;
+            NoteTab firstTab = null;
+            try {
+                openWith = Paths.get(args[0]).toFile();
+                firstTab = ((NoteTab) tabPane.getTabs().get(0));
+                firstTab.setFile(openWith);
+                firstTab.setModified(false);
+            } catch (InvalidPathException | NullPointerException ex) {
+                System.out.println("Invalid program argument");
+            } catch (FileIsDirectoryException e) {
+                openFolder(openWith);
+            } catch (FileIsNotTextException e) {
+                if (firstTab != null) {
+                    firstTab.setText(openWith.getName());
+                    firstTab.setFileWithoutCheck(openWith);
+                    firstTab.getNote().setText("This file is binary and cannot be displayed.");
+                    firstTab.getNote().setEditable(false);
+                    firstTab.setModified(false);
+                }
+            }
         }
     }
 
@@ -119,7 +143,11 @@ public class Controller {
             }
         }
         File file = dirChooser.showDialog(null);
-        if (file == null) {
+        openFolder(file);
+    }
+
+    public void openFolder(File file) {
+        if (file == null || file.isFile()) {
             return;
         }
 
@@ -270,7 +298,9 @@ public class Controller {
                 } else if (result.get() == cancelButton) {
                     event.consume();
                     tabPane.setTabDragPolicy(TabDragPolicy.FIXED);
-                    new Timeline(new KeyFrame(Duration.millis(1000), ae -> tabPane.setTabDragPolicy(TabDragPolicy.REORDER))).play();
+                    new Timeline(
+                            new KeyFrame(Duration.millis(1000), ae -> tabPane.setTabDragPolicy(TabDragPolicy.REORDER)))
+                            .play();
                     // There is a bug when you consume event and you instantly drag a tab
                 }
             }

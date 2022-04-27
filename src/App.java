@@ -12,6 +12,7 @@ import ui.Padcode;
 
 public class App extends Application {
     public static void main(String[] args) {
+        GUIController.Controller.args = args;
         launch(args);
     }
 
