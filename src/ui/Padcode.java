@@ -1,6 +1,7 @@
 package ui;
 
 import java.util.function.Consumer;
+import java.util.prefs.Preferences;
 
 import GUIController.Controller;
 import javafx.application.Platform;
@@ -26,6 +27,7 @@ public class Padcode {
     private TabPane tabPane;
     private HBox bottomBox;
     public Controller controller = new Controller();
+    private Preferences pref = Preferences.userNodeForPackage(Padcode.class); 
 
     // initialize
     public Padcode() {
@@ -125,15 +127,30 @@ public class Padcode {
 
         scene = new Scene(outerBox);
 
+        String theme = pref.get("theme","Winter");
+
         ToggleGroup tg = new ToggleGroup();
         RadioMenuItem modena = new RadioMenuItem("Modena");
         modena.setOnAction(e -> scene.getStylesheets().clear());
         modena.setToggleGroup(tg);
         themeMenu.getItems().add(modena);
-        createThemeItem(themeMenu, "Dark", tg);
-        createThemeItem(themeMenu, "DarkPink", tg);
-        createThemeItem(themeMenu, "Grey", tg);
-        createThemeItem(themeMenu, "Winter", tg).setSelected(true);
+
+        RadioMenuItem dark = createThemeItem(themeMenu, "Dark", tg);
+        RadioMenuItem darkPink = createThemeItem(themeMenu, "DarkPink", tg);
+        RadioMenuItem grey = createThemeItem(themeMenu, "Grey", tg);
+        RadioMenuItem winter = createThemeItem(themeMenu, "Winter", tg);
+
+        if (theme.equals("Normal")) {
+            modena.setSelected(true);
+        } else if (theme.equals("Dark")) {
+            dark.setSelected(true);
+        } else if (theme.equals("DarkPink")) {
+            darkPink.setSelected(true);
+        } else if (theme.equals("Grey")) {
+            grey.setSelected(true);
+        } else if (theme.equals("Winter")) {
+            winter.setSelected(true);
+        }
 
         controller.setExplorerView(explorerView);
         controller.setTabPane(tabPane);
@@ -157,6 +174,7 @@ public class Padcode {
         themeItem.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> ob, Boolean old_val, Boolean new_val) {
                 if (!old_val && new_val) {
+                    pref.put("theme",name);
                     scene.getStylesheets().clear();
                     scene.getStylesheets().add(
                             getClass().getClassLoader().getResource("./asset/Theme/" + name + ".css").toString());
